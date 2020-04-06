@@ -19,7 +19,6 @@ import { CHESS_TYPE } from './map'
      get chessboard() {
          return this.chessboard.grid
      }
-     get ownChessboard() {}
  }
 
  class JIANG_SHUAI_Chess extends BaseChess {
@@ -45,6 +44,7 @@ import { CHESS_TYPE } from './map'
 
      /**
       * 该类型棋子行走范围
+      * 将帅棋只能走九宫格
       */
      get walkScope() {
          return ''
