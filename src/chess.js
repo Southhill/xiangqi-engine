@@ -4,37 +4,34 @@
 import { CHESS_TYPE } from './map'
 
 class BaseChess {
-  constructor(player, chessboard) {
+  constructor(position, color) {
     /**
-     * 该棋子的棋手信息
+     * 该棋子的位置
      */
-    this.player = player
+    this.position = position
 
     /**
-     * 该棋子的棋盘信息
+     * 该棋子的颜色
      */
-    this.chessboard = chessboard
+    this.color = color
   }
-
-  get chessboard() {
-    return this.chessboard.grid
+  /**
+   * 该棋子处于将军位置
+   */
+  get jiangjun() {}
+  setPosition(position) {
+    this.position = position
   }
 }
 
 class JIANG_SHUAI_Chess extends BaseChess {
-  constructor(position, player, chessboard) {
-    super(player, chessboard)
-
-    this.position = position
+  constructor(position, color) {
+    super(position, color)
+    /**
+     * 棋子类型
+     */
+    this.type = CHESS_TYPE.JIANG_SHUAI
   }
-
-  /**
-   * 棋子类型
-   */
-  get type() {
-    return CHESS_TYPE.JIANG_SHUAI
-  }
-
   /**
    * 走法
    */
@@ -55,3 +52,5 @@ class JIANG_SHUAI_Chess extends BaseChess {
    */
   create() {}
 }
+
+export { JIANG_SHUAI_Chess }

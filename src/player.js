@@ -7,7 +7,7 @@ import { PLAYER_COLOR } from './map'
 export default class Player {
   constructor(name, chessboard) {
     /**
-     * 棋手的势力：甲方，乙方
+     * 棋手的名称：甲方，乙方
      */
     this.name = name
     /**
@@ -54,5 +54,20 @@ export default class Player {
    */
   sitdown(chessboard) {
     this.chessboard = chessboard
+  }
+  /**
+   * 获取棋手可用的全部棋子
+   */
+  getChessPool() {
+    return this.chessboard.chessPool.filter(chess => chess.color === this.color)
+  }
+  playChess(from, to) {
+    const chess = this.chessboard.getChess(from)
+
+    if (this.chessboard.getChess(to)) {
+      this.chessboard.discard(to)
+    }
+
+    chess.setPosition(to)
   }
 }

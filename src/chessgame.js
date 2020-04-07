@@ -38,7 +38,7 @@ export default class Chessgame {
     return Math.random() > 0.5
   }
 
-  setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang') {
+  setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang', chessMap) {
     // 初始化棋手
     if (
       typeof firstPlayerName !== 'string' ||
@@ -72,8 +72,8 @@ export default class Chessgame {
     this.player.sitdown(this.chessboard)
     this.nextPlayer.sitdown(this.chessboard)
   }
-  playChess() {
-    this.player.playChess()
+  playChess(from, to) {
+    this.player.playChess(from, to)
 
     this.checkChessGameStatus()
 
@@ -91,5 +91,12 @@ export default class Chessgame {
   /**
    * 检测棋局状态
    */
-  checkChessGameStatus() {}
+  checkChessGameStatus() {
+    const chessPool = this.player.getChessPool()
+    const jiangjun = chessPool.some(chess => chess.jiangjun)
+
+    if (jiangjun) {
+      this.status = CHESSGAME_STATUS.JIANG_JUN
+    }
+  }
 }

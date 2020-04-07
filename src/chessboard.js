@@ -2,18 +2,38 @@
  * 棋盘
  */
 
-import { PLAYER_TYPE } from './map'
+import { PLAYER_TYPE, DISCARDED_CHESS } from './map'
 
 export default class Chessboard {
-  constructor() {
+  constructor(chessMap) {
     /**
      * 棋盘网格
      */
     this.grid = Array(10).fill(Array(9).fill(null))
     /**
-     * 废弃的棋子
+     * 当前棋盘可用的棋子
      */
-    this.discardChessPool = []
+    this.chessPool = chessMap
+  }
+  get discardedChessPool() {
+    return this.chessPool.filter(chess => chess.position === DISCARDED_CHESS)
+  }
+
+  /**
+   * 根据位置获取具体的棋子
+   * @param {String} position
+   */
+  getChess(position) {
+    return this.chessPool.find(chess => chess.position === position)
+  }
+  /**
+   * 废弃掉棋子
+   * @param {String} position
+   */
+  discard(position) {
+    const discardedChess = this.getChess(position)
+
+    discardedChess.setPosition(DISCARDED_CHESS)
   }
 
   /**

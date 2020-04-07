@@ -64,3 +64,8 @@ export const CHESSGAME_STATUS = {
    */
   HE: 'he'
 }
+
+/**
+ * 表示该棋子在棋盘外，也即处于废弃状态
+ */
+export const DISCARDED_CHESS = '-1,-1'
