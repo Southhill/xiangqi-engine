@@ -41,4 +41,18 @@ export default class Player {
       ]
     }
   }
+
+  /**
+   * 设置棋手的颜色
+   * @param {String} color
+   */
+  setColor(color) {
+    this.color = color
+  }
+  /**
+   * 关联棋盘
+   */
+  sitdown(chessboard) {
+    this.chessboard = chessboard
+  }
 }

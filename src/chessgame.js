@@ -2,7 +2,9 @@
  * 棋局
  */
 import Player from './player'
-import { CHESSGAME_STATUS } from './map'
+import Chessboard from './chessboard'
+
+import { CHESSGAME_STATUS, PLAYER_COLOR } from './map'
 
 export default class Chessgame {
   constructor() {
@@ -22,6 +24,10 @@ export default class Chessgame {
      * 胜者
      */
     this.winner = ''
+    /**
+     * 棋盘
+     */
+    this.chessboard = null
   }
   /**
    * 猜和
@@ -33,6 +39,7 @@ export default class Chessgame {
   }
 
   setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang') {
+    // 初始化棋手
     if (
       typeof firstPlayerName !== 'string' ||
       typeof secondPlayerName !== 'string' ||
@@ -40,10 +47,49 @@ export default class Chessgame {
     ) {
       throw new Error('棋手名称不能重复，必须唯一！')
     }
+
     const firstPlayer = new Player(firstPlayerName)
-    // 初始化棋手
+    const secondPlayer = new Player(secondPlayerName)
+    const guessFirstResult = Chessgame.guessFirst()
+
+    if (guessFirstResult) {
+      firstPlayer.setColor(PLAYER_COLOR.RED)
+      secondPlayer.setColor(PLAYER_COLOR.BLACK)
+
+      this.player = firstPlayer
+      this.nextPlayer = secondPlayer
+    } else {
+      firstPlayer.setColor(PLAYER_COLOR.BLACK)
+      secondPlayer.setColor(PLAYER_COLOR.RED)
+
+      this.player = secondPlayer
+      this.nextPlayer = firstPlayer
+    }
+
     // 初始化棋盘
-    // 加入甲方棋子
-    // 加入乙方棋子
+    this.chessboard = new Chessboard()
+
+    this.player.sitdown(this.chessboard)
+    this.nextPlayer.sitdown(this.chessboard)
   }
+  playChess() {
+    this.player.playChess()
+
+    this.checkChessGameStatus()
+
+    this.turnToNext()
+  }
+  /**
+   * 棋局控制权轮转到下一位
+   */
+  turnToNext() {
+    const temp = this.player
+
+    this.player = this.nextPlayer
+    this.nextPlayer = temp
+  }
+  /**
+   * 检测棋局状态
+   */
+  checkChessGameStatus() {}
 }
