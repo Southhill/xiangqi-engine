@@ -28,6 +28,12 @@ export default class Chessboard {
       chess => chess.type === CHESS_TYPE.JIANG_SHUAI
     )
   }
+  get chessboardScope() {
+    return [
+      [0, 0],
+      [9, 8]
+    ]
+  }
   get ownChessboardScope(color) {
     if (color === PLAYER_COLOR.RED) {
       return [
@@ -54,6 +60,12 @@ export default class Chessboard {
    */
   getChess(position) {
     return this.chessPool.find(chess => chess.position === position)
+  }
+  /**
+   * 棋盘给定位置存在有效的棋子
+   */
+  hasChess(position) {
+    return this.chessPool.findIndex(chess => chess.position === position) > -1
   }
   /**
    * 废弃掉棋子

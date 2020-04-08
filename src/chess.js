@@ -2,6 +2,7 @@
  * 棋子
  */
 import { CHESS_TYPE, PLAYER_COLOR } from './map'
+import { posInRange, halfPoint, horseLegPoint } from './utils'
 
 class BaseChess {
   constructor(position, color) {
@@ -55,8 +56,7 @@ class JIANG_SHUAI_Chess extends BaseChess {
    */
   get aliasPosition() {}
   /**
-   * 该类型棋子行走范围
-   * 将帅棋只能走九宫格
+   * 该类型棋子行走范围：将帅棋只能走九宫格
    */
   get walkScope() {
     if (this.color === PLAYER_COLOR.RED) {
@@ -131,8 +131,7 @@ class ShiChess extends BaseChess {
    */
   get aliasPosition() {}
   /**
-   * 该类型棋子行走范围
-   * 士棋走米字
+   * 该类型棋子行走范围：士棋走米字
    */
   get walkScope() {
     if (this.color === PLAYER_COLOR.RED) {
@@ -186,8 +185,7 @@ class XIANGChess extends BaseChess {
    */
   get aliasPosition() {}
   /**
-   * 该类型棋子行走范围
-   * 士棋走米字
+   * 该类型棋子行走范围：己方棋盘
    */
   get walkScope() {
     return 'self'
@@ -206,21 +204,205 @@ class XIANGChess extends BaseChess {
   }
   /**
    * 【相棋】下一步的走法位置枚举
+   *
    * 小心别象腿
    */
   getTreads(chessboard) {
     const [x, y] = this.position.split(',').map(Number)
-    const tempPositions = [
-      `${x + 1},${y + 1}`,
-      `${x - 1},${y - 1}`,
-      `${x - 1},${y + 1}`,
-      `${x + 1},${y - 1}`
+    const result = [
+      `${x + 3},${y + 3}`,
+      `${x - 3},${y - 3}`,
+      `${x - 3},${y + 3}`,
+      `${x + 3},${y - 3}`
     ]
+      .filter(pos => {
+        // 过滤掉超出棋格范围的位置
+        const scope = chessboard.ownChessboardScope
+        const position = pos.split(',').map(Number)
 
-    return tempPositions.filter(pos => {
-      this.walkScope.indexOf(pos) > -1
-    })
+        return posInRange(position, scope)
+      })
+      .filter(po => {
+        // 处理别象腿的位置
+        const position = halfPoint(this.position, po)
+
+        return !chessboard.hasChess(position)
+      })
+
+    return result
+  }
+}
+/**
+ * 【马】棋
+ */
+class MaChess extends BaseChess {
+  constructor(position, color) {
+    super(position, color)
+    /**
+     * 棋子类型
+     */
+    this.type === CHESS_TYPE.MA
+  }
+  /**
+   * 棋子位置的别名
+   */
+  get aliasPosition() {}
+  /**
+   * 该类型棋子行走范围：整张棋盘
+   */
+  get walkScope() {
+    return 'all'
+  }
+
+  /**
+   * 创造标准棋盘的【马】棋
+   */
+  static create() {
+    return [
+      new MaChess('0,1', PLAYER_COLOR.RED),
+      new MaChess('0,7', PLAYER_COLOR.RED),
+      new MaChess('9,7', PLAYER_COLOR.BLACK),
+      new MaChess('9,1', PLAYER_COLOR.BLACK)
+    ]
+  }
+  /**
+   * 【马棋】下一步的走法位置枚举，理论有8个落点
+   *
+   * 小心别马腿
+   */
+  getTreads(chessboard) {
+    const [x, y] = this.position.split(',').map(Number)
+    const result = [
+      // 第一象限
+      `${x + 1},${y + 2}`,
+      `${x + 2},${y + 1}`,
+      // 第二象限
+      `${x + 2},${y - 1}`,
+      `${x + 1},${y - 2}`,
+      // 第三象限
+      `${x - 1},${y - 2}`,
+      `${x - 2},${y - 1}`,
+      // 第四象限
+      `${x - 2},${y + 1}`,
+      `${x - 1},${y + 2}`
+    ]
+      .filter(pos => {
+        // 过滤掉超出棋格范围的位置
+        const scope = chessboard.chessboardScope
+        const position = pos.split(',').map(Number)
+
+        return posInRange(position, scope)
+      })
+      .filter(po => {
+        // 处理别马腿的位置
+        const position = horseLegPoint(this.position, po)
+
+        return !chessboard.hasChess(position)
+      })
+
+    return result
+  }
+}
+/**
+ * 【车】棋
+ */
+class JuChess extends BaseChess {
+  constructor(position, color) {
+    super(position, color)
+    /**
+     * 棋子类型
+     */
+    this.type === CHESS_TYPE.JU
+  }
+  /**
+   * 棋子位置的别名
+   */
+  get aliasPosition() {}
+  /**
+   * 该类型棋子行走范围：整张棋盘
+   */
+  get walkScope() {
+    return 'all'
+  }
+
+  /**
+   * 创造标准棋盘的【车】棋
+   */
+  static create() {
+    return [
+      new JuChess('0,0', PLAYER_COLOR.RED),
+      new JuChess('0,8', PLAYER_COLOR.RED),
+      new JuChess('9,8', PLAYER_COLOR.BLACK),
+      new JuChess('9,0', PLAYER_COLOR.BLACK)
+    ]
+  }
+  /**
+   * 【车棋】下一步的走法位置枚举
+   */
+  getTreads(chessboard) {
+    const [x, y] = this.position.split(',').map(Number)
+    const scope = chessboard.chessboardScope
+    const result = []
+
+    // 处理上方
+    for (let diff = 1; ; diff++) {
+      const position = `${x + diff},${y}`
+      if (posInRange(position, scope)) {
+        break
+      }
+
+      if (chessboard.hasChess(position)) {
+        result.push(position)
+        break
+      } else {
+        result.push(position)
+      }
+    }
+    // 处理下方
+    for (let diff = 1; ; diff++) {
+      const position = `${x - diff},${y}`
+      if (posInRange(position, scope)) {
+        break
+      }
+
+      if (chessboard.hasChess(position)) {
+        result.push(position)
+        break
+      } else {
+        result.push(position)
+      }
+    }
+    // 处理右方
+    for (let diff = 1; ; diff++) {
+      const position = `${x},${y + diff}`
+      if (posInRange(position, scope)) {
+        break
+      }
+
+      if (chessboard.hasChess(position)) {
+        result.push(position)
+        break
+      } else {
+        result.push(position)
+      }
+    }
+    // 处理左方
+    for (let diff = 1; ; diff++) {
+      const position = `${x},${y - diff}`
+      if (posInRange(position, scope)) {
+        break
+      }
+
+      if (chessboard.hasChess(position)) {
+        result.push(position)
+        break
+      } else {
+        result.push(position)
+      }
+    }
+
+    return result
   }
 }
 
-export { JIANG_SHUAI_Chess, ShiChess, XIANGChess }
+export { JIANG_SHUAI_Chess, ShiChess, XIANGChess, MaChess, JuChess }
