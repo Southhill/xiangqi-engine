@@ -81,7 +81,7 @@ class JIANG_SHUAI_Chess extends BaseChess {
   /**
    * 创造标准棋盘的【将|帅】棋
    */
-  create() {
+  static create() {
     return [
       new JIANG_SHUAI_Chess('0,4', PLAYER_COLOR.RED),
       new JIANG_SHUAI_Chess('9,4', PLAYER_COLOR.BLACK)
@@ -135,7 +135,7 @@ class ShiChess extends BaseChess {
   /**
    * 创造标准棋盘的【士】棋
    */
-  create() {
+  static create() {
     return [
       new ShiChess('0,3', PLAYER_COLOR.RED),
       new ShiChess('0,5', PLAYER_COLOR.RED),
@@ -188,7 +188,7 @@ class XIANGChess extends BaseChess {
   /**
    * 创造标准棋盘的【相】棋
    */
-  create() {
+  static create() {
     return [
       new XIANGChess('0,2', PLAYER_COLOR.RED),
       new XIANGChess('0,6', PLAYER_COLOR.RED),
