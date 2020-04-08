@@ -2,7 +2,7 @@
  * 棋盘
  */
 
-import { PLAYER_TYPE, DISCARDED_CHESS } from './map'
+import { PLAYER_COLOR, DISCARDED_CHESS } from './map'
 
 export default class Chessboard {
   constructor(chessMap) {
@@ -13,7 +13,7 @@ export default class Chessboard {
       Array.from(Array(9), (_, idx) => `${index},${idx}`)
     )
     /**
-     * 当前棋盘可用的棋子
+     * 当前棋盘所有的棋子
      */
     this.chessPool = chessMap
   }
@@ -40,12 +40,24 @@ export default class Chessboard {
 
     discardedChess.setPosition(DISCARDED_CHESS)
   }
+  /**
+   * 获取棋盘上某列的棋子
+   */
+  getChessForColumn(index) {
+    return this.usableChessPool.filter(chess => chess.point[1] === index)
+  }
+  /**
+   * 获取棋盘上某行的棋子
+   */
+  getChessForRow(index) {
+    return this.usableChessPool.filter(chess => chess.point[0] === index)
+  }
 
   /**
    * 河界线
    */
   getHejiexian(player) {
-    if (player === PLAYER_TYPE.JIA_FANG) {
+    if (player === PLAYER_COLOR.RED) {
       return this.grid[4]
     } else {
       return this.grid[5]
@@ -55,7 +67,7 @@ export default class Chessboard {
    * 兵行线
    */
   getBingxingxian(player) {
-    if (player === PLAYER_TYPE.JIA_FANG) {
+    if (player === PLAYER_COLOR.RED) {
       return this.grid[3]
     } else {
       return this.grid[6]
@@ -65,7 +77,7 @@ export default class Chessboard {
    * 宫顶线
    */
   getGongdingxian(player) {
-    if (player === PLAYER_TYPE.JIA_FANG) {
+    if (player === PLAYER_COLOR.RED) {
       return this.grid[2]
     } else {
       return this.grid[7]
@@ -75,7 +87,7 @@ export default class Chessboard {
    * 底二路
    */
   getDierlu(player) {
-    if (player === PLAYER_TYPE.JIA_FANG) {
+    if (player === PLAYER_COLOR.RED) {
       return this.grid[1]
     } else {
       return this.grid[8]
@@ -85,7 +97,7 @@ export default class Chessboard {
    * 底线
    */
   getDixian(player) {
-    if (player === PLAYER_TYPE.JIA_FANG) {
+    if (player === PLAYER_COLOR.RED) {
       return this.grid[0]
     } else {
       return this.grid[9]
@@ -95,7 +107,7 @@ export default class Chessboard {
    * 九宫
    */
   getJiugong(player) {
-    if (player === PLAYER_TYPE.JIA_FANG) {
+    if (player === PLAYER_COLOR.RED) {
       return [
         [this.grid[0][3], this.grid[0][4], this.grid[0][4]],
         [this.grid[1][3], this.grid[1][4], this.grid[1][4]],

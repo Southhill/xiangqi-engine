@@ -129,6 +129,16 @@ export default class Chessgame {
     this.nextPlayer = temp
   }
   /**
+   * 判断下一位棋手的将帅棋是否被将军
+   */
+  checkJiangjun() {
+    return (
+      this.player.allChessTread.indexOf(
+        this.nextPlayer.jiangshuaiChess.position
+      ) > -1
+    )
+  }
+  /**
    * 检测棋局状态
    *
    * 返回`false`表明棋局已决出胜负
@@ -144,7 +154,7 @@ export default class Chessgame {
       return false
     }
     // 判断棋子是否会[将军]到对方的**将帅**
-    if (this.player.chessPool.some(chess => chess.jiangjun)) {
+    if (this.checkJiangjun()) {
       this.status = CHESSGAME_STATUS.JIANG_JUN
     }
 

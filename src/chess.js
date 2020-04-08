@@ -16,9 +16,11 @@ class BaseChess {
     this.color = color
   }
   /**
-   * 该棋子处于**将军**位置
+   * 获取棋子的坐标，以数组的形式返回
    */
-  get jiangjun() {}
+  get point() {
+    return this.position.split(',')
+  }
   /**
    * 棋子位置的别名
    */
@@ -40,10 +42,20 @@ class JIANG_SHUAI_Chess extends BaseChess {
     this.type = CHESS_TYPE.JIANG_SHUAI
   }
   /**
-   * 下一步的走法枚举
+   * 下一步的走法位置枚举
    */
   get treads() {
-    return []
+    const [x, y] = this.position.split(',').map(Number)
+    const tempPositions = [
+      `${x + 1},y`,
+      `${x - 1},y`,
+      `x,${y + 1}`,
+      `x,${y - 1}`
+    ]
+
+    return tempPositions.filter(pos => {
+      this.walkScope.indexOf(pos) > -1
+    })
   }
 
   /**
@@ -51,7 +63,11 @@ class JIANG_SHUAI_Chess extends BaseChess {
    * 将帅棋只能走九宫格
    */
   get walkScope() {
-    return ''
+    if (this.color === PLAYER_COLOR.RED) {
+      return ['0,3', '0,4', '0,5', '1,3', '1,4', '1,5', '2,3', '2,4', '2,5']
+    } else {
+      return ['9,5', '9,4', '9,3', '8,5', '8,4', '8,3', '7,5', '7,4', '7,3']
+    }
   }
 
   /**

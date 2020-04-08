@@ -58,6 +58,37 @@ export default class Player {
       chess => chess.color === this.color
     )
   }
+  /**
+   * 该棋手的所有可用的棋子的全部走法
+   */
+  get allChessTread() {
+    const result = []
+
+    this.chessPool.forEach(chess => {
+      result.push(...chess.treads)
+    })
+
+    return result
+  }
+  /**
+   * 获取棋手的将帅棋
+   */
+  get jiangshuaiChess() {
+    return this.chessPool.find(chess => chess.type === CHESS_TYPE.JIANG_SHUAI)
+  }
+  /**
+   * 可以直取中军(将吃帅)
+   */
+  get zhiquzhongjun() {
+    const chesses = this.chessboard.getChessForColumn(
+      this.jiangshuaiChess.point[1]
+    )
+
+    return (
+      chesses.length === 2 &&
+      chesses.every(chess => chess.type === CHESS_TYPE.JIANG_SHUAI)
+    )
+  }
 
   /**
    * 设置棋手的颜色
