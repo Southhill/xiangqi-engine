@@ -68,6 +68,15 @@ export default class Chessboard {
     return this.chessPool.findIndex(chess => chess.position === position) > -1
   }
   /**
+   * 给定位置的棋子位于棋盘边界上
+   * @param {String} position
+   */
+  isBorderLineChess(position) {
+    const [x, y] = position.split(',').map(Number)
+
+    return x === 0 || x === 9 || y === 0 || y === 8
+  }
+  /**
    * 废弃掉棋子
    * @param {String} position
    */
@@ -80,13 +89,17 @@ export default class Chessboard {
    * 获取棋盘上某列的棋子
    */
   getChessForColumn(index) {
-    return this.usableChessPool.filter(chess => chess.point[1] === index)
+    return this.usableChessPool
+      .filter(chess => chess.point[1] === index)
+      .sort((chessA, chessB) => chessB.point[0] > chessA.point[0])
   }
   /**
    * 获取棋盘上某行的棋子
    */
   getChessForRow(index) {
-    return this.usableChessPool.filter(chess => chess.point[0] === index)
+    return this.usableChessPool
+      .filter(chess => chess.point[0] === index)
+      .sort((chessA, chessB) => chessB.point[1] > chessA.point[1])
   }
   /**
    * 河界线
