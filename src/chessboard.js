@@ -2,7 +2,7 @@
  * 棋盘
  */
 
-import { PLAYER_COLOR, DISCARDED_CHESS } from './map'
+import { PLAYER_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
 
 export default class Chessboard {
   constructor() {
@@ -22,6 +22,24 @@ export default class Chessboard {
   }
   get usableChessPool() {
     return this.chessPool.filter(chess => chess.position !== DISCARDED_CHESS)
+  }
+  get jiangshuaiChesses() {
+    return this.usableChessPool.filter(
+      chess => chess.type === CHESS_TYPE.JIANG_SHUAI
+    )
+  }
+  get ownChessboardScope(color) {
+    if (color === PLAYER_COLOR.RED) {
+      return [
+        [0, 0],
+        [4, 8]
+      ]
+    } else {
+      return [
+        [5, 0],
+        [9, 8]
+      ]
+    }
   }
   /**
    * 初始化棋谱
@@ -58,7 +76,6 @@ export default class Chessboard {
   getChessForRow(index) {
     return this.usableChessPool.filter(chess => chess.point[0] === index)
   }
-
   /**
    * 河界线
    */
@@ -112,8 +129,8 @@ export default class Chessboard {
   /**
    * 九宫
    */
-  getJiugong(player) {
-    if (player === PLAYER_COLOR.RED) {
+  getJiugong(color) {
+    if (color === PLAYER_COLOR.RED) {
       return [
         [this.grid[0][3], this.grid[0][4], this.grid[0][4]],
         [this.grid[1][3], this.grid[1][4], this.grid[1][4]],

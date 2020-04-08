@@ -18,27 +18,6 @@ export default class Player {
      */
     this.chessboard = null
   }
-
-  get ownChessboard() {
-    if (this.color === PLAYER_COLOR.RED) {
-      return this.chessboard.grid.slice(0, 5)
-    } else {
-      return this.chessboard.grid.slice(5)
-    }
-  }
-  get ownChessboardScope() {
-    if (this.color === PLAYER_COLOR.RED) {
-      return [
-        [0, 0],
-        [4, 8]
-      ]
-    } else {
-      return [
-        [5, 0],
-        [9, 8]
-      ]
-    }
-  }
   /**
    * 丢失了将帅旗，也即对战失败了
    */
@@ -65,15 +44,10 @@ export default class Player {
     const result = []
 
     this.chessPool.forEach(chess => {
-      result.push(...chess.treads)
+      const treads = chess.getTreads(this.chessboard)
+
+      result.push(...treads)
     })
-
-    const zhiquzhongjun = this.zhiquzhongjun
-
-    // 当可以直取中军时，将中军（对方的将帅棋）的位置加入到走法中
-    if (zhiquzhongjun) {
-      result.push(zhiquzhongjun.position)
-    }
 
     return result
   }
@@ -82,20 +56,6 @@ export default class Player {
    */
   get jiangshuaiChess() {
     return this.chessPool.find(chess => chess.type === CHESS_TYPE.JIANG_SHUAI)
-  }
-  /**
-   * 可以直取中军(将吃帅操作)
-   */
-  get zhiquzhongjun() {
-    const chesses = this.chessboard.getChessForColumn(
-      this.jiangshuaiChess.point[1]
-    )
-
-    return (
-      chesses.length === 2 &&
-      chesses.every(chess => chess.type === CHESS_TYPE.JIANG_SHUAI) &&
-      chesses.find(chess => chess.position !== this.jiangshuaiChess.position)
-    )
   }
 
   /**

@@ -14,6 +14,10 @@ class BaseChess {
      * 该棋子的颜色
      */
     this.color = color
+    /**
+     * 棋盘
+     */
+    this.chessboard = null
   }
   /**
    * 获取棋子的坐标，以数组的形式返回
@@ -31,6 +35,9 @@ class BaseChess {
       cb()
     }
   }
+  bindChessboard(chessboard) {
+    this.chessboard = chessboard
+  }
 }
 /**
  * 【将|帅】棋
@@ -47,25 +54,6 @@ class JIANG_SHUAI_Chess extends BaseChess {
    * 棋子位置的别名
    */
   get aliasPosition() {}
-  /**
-   * 下一步的走法位置枚举，这里不包含将吃帅的走法，
-   *
-   * 将吃帅的走法在Player类中判断
-   */
-  get treads() {
-    const [x, y] = this.position.split(',').map(Number)
-    const tempPositions = [
-      `${x + 1},y`,
-      `${x - 1},y`,
-      `x,${y + 1}`,
-      `x,${y - 1}`
-    ]
-
-    return tempPositions.filter(pos => {
-      this.walkScope.indexOf(pos) > -1
-    })
-  }
-
   /**
    * 该类型棋子行走范围
    * 将帅棋只能走九宫格
@@ -87,6 +75,45 @@ class JIANG_SHUAI_Chess extends BaseChess {
       new JIANG_SHUAI_Chess('9,4', PLAYER_COLOR.BLACK)
     ]
   }
+  /**
+   * 下一步的走法位置枚举，这里不包含将吃帅的走法，
+   *
+   * 将吃帅的走法在Player类中判断
+   */
+  getTreads(chessboard) {
+    const [x, y] = this.position.split(',').map(Number)
+    const positions = [
+      `${x + 1},y`,
+      `${x - 1},y`,
+      `x,${y + 1}`,
+      `x,${y - 1}`
+    ].filter(pos => {
+      this.walkScope.indexOf(pos) > -1
+    })
+    const otherJiangshuaiChess = this.zhiquzhongjun(chessboard)
+
+    // 当可以直取中军时，将中军（对方的将帅棋）的位置加入到走法中
+    if (otherJiangshuaiChess) {
+      positions.push(otherJiangshuaiChess.position)
+    }
+
+    return positions
+  }
+  /**
+   * 可以直取中军(将吃帅操作)
+   */
+  zhiquzhongjun(chessboard) {
+    const selfJiangshuaiChess = chessboard.jiangshuaiChesses.filter(
+      chess => chess.color === this.color
+    )
+    const chesses = chessboard.getChessForColumn(selfJiangshuaiChess.point[1])
+
+    return (
+      chesses.length === 2 &&
+      chesses.every(chess => chess.type === CHESS_TYPE.JIANG_SHUAI) &&
+      chesses.find(chess => chess.position !== selfJiangshuaiChess.position)
+    )
+  }
 }
 /**
  * 【士】棋
@@ -103,23 +130,6 @@ class ShiChess extends BaseChess {
    * 棋子位置的别名
    */
   get aliasPosition() {}
-  /**
-   * 下一步的走法位置枚举
-   */
-  get treads() {
-    const [x, y] = this.position.split(',').map(Number)
-    const tempPositions = [
-      `${x + 1},${y + 1}`,
-      `${x - 1},${y - 1}`,
-      `${x - 1},${y + 1}`,
-      `${x + 1},${y - 1}`
-    ]
-
-    return tempPositions.filter(pos => {
-      this.walkScope.indexOf(pos) > -1
-    })
-  }
-
   /**
    * 该类型棋子行走范围
    * 士棋走米字
@@ -143,6 +153,22 @@ class ShiChess extends BaseChess {
       new ShiChess('9,3', PLAYER_COLOR.BLACK)
     ]
   }
+  /**
+   * 下一步的走法位置枚举
+   */
+  getTreads() {
+    const [x, y] = this.position.split(',').map(Number)
+    const tempPositions = [
+      `${x + 1},${y + 1}`,
+      `${x - 1},${y - 1}`,
+      `${x - 1},${y + 1}`,
+      `${x + 1},${y - 1}`
+    ]
+
+    return tempPositions.filter(pos => {
+      this.walkScope.indexOf(pos) > -1
+    })
+  }
 }
 /**
  * 【相】棋
@@ -159,24 +185,6 @@ class XIANGChess extends BaseChess {
    * 棋子位置的别名
    */
   get aliasPosition() {}
-  /**
-   * 【相棋】下一步的走法位置枚举
-   * 小心别象腿
-   */
-  get treads() {
-    const [x, y] = this.position.split(',').map(Number)
-    const tempPositions = [
-      `${x + 1},${y + 1}`,
-      `${x - 1},${y - 1}`,
-      `${x - 1},${y + 1}`,
-      `${x + 1},${y - 1}`
-    ]
-
-    return tempPositions.filter(pos => {
-      this.walkScope.indexOf(pos) > -1
-    })
-  }
-
   /**
    * 该类型棋子行走范围
    * 士棋走米字
@@ -195,6 +203,23 @@ class XIANGChess extends BaseChess {
       new XIANGChess('9,6', PLAYER_COLOR.BLACK),
       new XIANGChess('9,2', PLAYER_COLOR.BLACK)
     ]
+  }
+  /**
+   * 【相棋】下一步的走法位置枚举
+   * 小心别象腿
+   */
+  getTreads(chessboard) {
+    const [x, y] = this.position.split(',').map(Number)
+    const tempPositions = [
+      `${x + 1},${y + 1}`,
+      `${x - 1},${y - 1}`,
+      `${x - 1},${y + 1}`,
+      `${x + 1},${y - 1}`
+    ]
+
+    return tempPositions.filter(pos => {
+      this.walkScope.indexOf(pos) > -1
+    })
   }
 }
 
