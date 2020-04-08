@@ -28,10 +28,41 @@ export default class Chessgame {
      * 棋盘
      */
     this.chessboard = null
+    /**
+     * 棋手名映射表
+     */
+    this.otherPlayerNameMap = null
+  }
+  /**
+   * 当前执棋者的名称
+   */
+  get currentPlayerName() {
+    return this.player.name
+  }
+  /**
+   * 棋盘处于将军状态
+   */
+  get isJiangjun() {
+    return [
+      this.status === CHESSGAME_STATUS.JIANG_JUN,
+      {
+        jiangjunzhe: this.currentPlayerName,
+        bei_jiangjunzhe: this.otherPlayerNameMap[this.currentPlayerName]
+      }
+    ]
+  }
+  /**
+   * 当前执棋者可以下棋
+   */
+  get canPlay() {
+    // 棋局处于对战状态并且当前棋手有棋子可下
+    return this.status === GAME_STATUS.vs
   }
   /**
    * 猜和
+   *
    * 返回`true`，表示第一位棋手为红方
+   *
    * 返回`false`，表示第二位棋手为红方
    */
   static guessFirst() {
@@ -52,6 +83,11 @@ export default class Chessgame {
     const secondPlayer = new Player(secondPlayerName)
     const guessFirstResult = Chessgame.guessFirst()
 
+    this.otherPlayerNameMap = {
+      [firstPlayerName]: secondPlayerName,
+      [secondPlayerName]: firstPlayerName
+    }
+
     if (guessFirstResult) {
       firstPlayer.setColor(PLAYER_COLOR.RED)
       secondPlayer.setColor(PLAYER_COLOR.BLACK)
@@ -67,17 +103,21 @@ export default class Chessgame {
     }
 
     // 初始化棋盘
-    this.chessboard = new Chessboard()
+    this.chessboard = new Chessboard(chessMap)
 
     this.player.sitdown(this.chessboard)
     this.nextPlayer.sitdown(this.chessboard)
   }
   playChess(from, to) {
-    this.player.playChess(from, to)
+    if (this.canPlay) {
+      this.player.playChess(from, to)
 
-    this.checkChessGameStatus()
-
-    this.turnToNext()
+      // 设置棋盘状态, 返回false说明棋局已决出胜负
+      if (this.checkChessGameStatus()) {
+        // 棋手轮转
+        this.turnToNext()
+      }
+    }
   }
   /**
    * 棋局控制权轮转到下一位
@@ -90,13 +130,24 @@ export default class Chessgame {
   }
   /**
    * 检测棋局状态
+   *
+   * 返回`false`表明棋局已决出胜负
+   *
+   * 返回`true`表明棋局还在对战中
    */
   checkChessGameStatus() {
-    const chessPool = this.player.getChessPool()
-    const jiangjun = chessPool.some(chess => chess.jiangjun)
+    // 对方棋手的将帅棋子已经被吃
+    if (this.nextPlayer.lostJiangshuaiChess) {
+      this.status = CHESSGAME_STATUS.WIN
+      this.winner = this.currentPlayerName
 
-    if (jiangjun) {
+      return false
+    }
+    // 判断棋子是否会[将军]到对方的**将帅**
+    if (this.player.chessPool.some(chess => chess.jiangjun)) {
       this.status = CHESSGAME_STATUS.JIANG_JUN
     }
+
+    return true
   }
 }

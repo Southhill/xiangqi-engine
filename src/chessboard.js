@@ -7,9 +7,11 @@ import { PLAYER_TYPE, DISCARDED_CHESS } from './map'
 export default class Chessboard {
   constructor(chessMap) {
     /**
-     * 棋盘网格
+     * 棋盘网格，并为每个网格填充相关的位置信息
      */
-    this.grid = Array(10).fill(Array(9).fill(null))
+    this.grid = Array.from(Array(10), (_, index) =>
+      Array.from(Array(9), (_, idx) => `${index},${idx}`)
+    )
     /**
      * 当前棋盘可用的棋子
      */
@@ -17,6 +19,9 @@ export default class Chessboard {
   }
   get discardedChessPool() {
     return this.chessPool.filter(chess => chess.position === DISCARDED_CHESS)
+  }
+  get usableChessPool() {
+    return this.chessPool.filter(chess => chess.position !== DISCARDED_CHESS)
   }
 
   /**

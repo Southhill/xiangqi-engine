@@ -1,7 +1,7 @@
 /**
  * 棋子
  */
-import { CHESS_TYPE } from './map'
+import { CHESS_TYPE, PLAYER_COLOR } from './map'
 
 class BaseChess {
   constructor(position, color) {
@@ -16,9 +16,16 @@ class BaseChess {
     this.color = color
   }
   /**
-   * 该棋子处于将军位置
+   * 该棋子处于**将军**位置
    */
   get jiangjun() {}
+  /**
+   * 棋子位置的别名
+   */
+  get aliasPosition() {}
+  /**
+   * 设置棋子的位置
+   */
   setPosition(position) {
     this.position = position
   }
@@ -33,7 +40,7 @@ class JIANG_SHUAI_Chess extends BaseChess {
     this.type = CHESS_TYPE.JIANG_SHUAI
   }
   /**
-   * 走法
+   * 下一步的走法枚举
    */
   get treads() {
     return []

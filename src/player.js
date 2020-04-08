@@ -1,18 +1,16 @@
 /**
  * 棋手
- * 甲方在前，乙方在后
  */
-import { PLAYER_COLOR } from './map'
+import { PLAYER_COLOR, CHESS_TYPE } from './map'
 
 export default class Player {
-  constructor(name, chessboard) {
+  constructor(name) {
     /**
      * 棋手的名称：甲方，乙方
      */
     this.name = name
     /**
-     * 棋手的颜色：红色，黑色。
-     * 真实的棋局中，红色棋手先走
+     * 棋手的颜色：红色，黑色。真实的棋局中，红色棋手先走
      */
     this.color = ''
     /**
@@ -22,14 +20,14 @@ export default class Player {
   }
 
   get ownChessboard() {
-    if (this.type === PLAYER_COLOR.RED) {
+    if (this.color === PLAYER_COLOR.RED) {
       return this.chessboard.grid.slice(0, 5)
     } else {
       return this.chessboard.grid.slice(5)
     }
   }
   get ownChessboardScope() {
-    if (this.type === PLAYER_COLOR.RED) {
+    if (this.color === PLAYER_COLOR.RED) {
       return [
         [0, 0],
         [4, 8]
@@ -40,6 +38,25 @@ export default class Player {
         [9, 8]
       ]
     }
+  }
+  /**
+   * 丢失了将帅旗，也即对战失败了
+   */
+  get lostJiangshuaiChess() {
+    return (
+      this.chessPool.findiIndex(
+        chess => chess.type === CHESS_TYPE.JIANG_SHUAI
+      ) === -1
+    )
+  }
+
+  /**
+   * 棋手当前在棋局上的棋子
+   */
+  get chessPool() {
+    return this.chessboard.usableChessPool.filter(
+      chess => chess.color === this.color
+    )
   }
 
   /**
@@ -56,11 +73,8 @@ export default class Player {
     this.chessboard = chessboard
   }
   /**
-   * 获取棋手可用的全部棋子
+   * 棋手下棋
    */
-  getChessPool() {
-    return this.chessboard.chessPool.filter(chess => chess.color === this.color)
-  }
   playChess(from, to) {
     const chess = this.chessboard.getChess(from)
 
