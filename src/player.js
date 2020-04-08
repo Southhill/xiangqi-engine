@@ -68,6 +68,13 @@ export default class Player {
       result.push(...chess.treads)
     })
 
+    const zhiquzhongjun = this.zhiquzhongjun
+
+    // 当可以直取中军时，将中军（对方的将帅棋）的位置加入到走法中
+    if (zhiquzhongjun) {
+      result.push(zhiquzhongjun.position)
+    }
+
     return result
   }
   /**
@@ -77,7 +84,7 @@ export default class Player {
     return this.chessPool.find(chess => chess.type === CHESS_TYPE.JIANG_SHUAI)
   }
   /**
-   * 可以直取中军(将吃帅)
+   * 可以直取中军(将吃帅操作)
    */
   get zhiquzhongjun() {
     const chesses = this.chessboard.getChessForColumn(
@@ -86,7 +93,8 @@ export default class Player {
 
     return (
       chesses.length === 2 &&
-      chesses.every(chess => chess.type === CHESS_TYPE.JIANG_SHUAI)
+      chesses.every(chess => chess.type === CHESS_TYPE.JIANG_SHUAI) &&
+      chesses.find(chess => chess.position !== this.jiangshuaiChess.position)
     )
   }
 

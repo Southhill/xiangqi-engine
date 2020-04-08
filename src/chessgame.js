@@ -103,7 +103,9 @@ export default class Chessgame {
     }
 
     // 初始化棋盘
-    this.chessboard = new Chessboard(chessMap)
+    this.chessboard = new Chessboard()
+    // 初始化棋谱
+    this.chessboard.initChessMap(chessMap)
 
     this.player.sitdown(this.chessboard)
     this.nextPlayer.sitdown(this.chessboard)
