@@ -3,6 +3,7 @@
  */
 
 import { PLAYER_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
+import createChess, { createStandardChessMap } from './chess'
 
 export default class Chessboard {
   constructor() {
@@ -52,6 +53,15 @@ export default class Chessboard {
    */
   initChessMap(chessMap) {
     if (!Array.isArray(chessMap)) {
+      chessMap.forEach(item => {
+        this.chessPool.push(createChess(item))
+      })
+    } else {
+      const allChess = createStandardChessMap()
+
+      allChess.forEach(chess => {
+        this.chessPool.push(chess)
+      })
     }
   }
   /**
@@ -100,73 +110,5 @@ export default class Chessboard {
     return this.usableChessPool
       .filter(chess => chess.point[0] === index)
       .sort((chessA, chessB) => chessB.point[1] > chessA.point[1])
-  }
-  /**
-   * 河界线
-   */
-  getHejiexian(player) {
-    if (player === PLAYER_COLOR.RED) {
-      return this.grid[4]
-    } else {
-      return this.grid[5]
-    }
-  }
-  /**
-   * 兵行线
-   */
-  getBingxingxian(player) {
-    if (player === PLAYER_COLOR.RED) {
-      return this.grid[3]
-    } else {
-      return this.grid[6]
-    }
-  }
-  /**
-   * 宫顶线
-   */
-  getGongdingxian(player) {
-    if (player === PLAYER_COLOR.RED) {
-      return this.grid[2]
-    } else {
-      return this.grid[7]
-    }
-  }
-  /**
-   * 底二路
-   */
-  getDierlu(player) {
-    if (player === PLAYER_COLOR.RED) {
-      return this.grid[1]
-    } else {
-      return this.grid[8]
-    }
-  }
-  /**
-   * 底线
-   */
-  getDixian(player) {
-    if (player === PLAYER_COLOR.RED) {
-      return this.grid[0]
-    } else {
-      return this.grid[9]
-    }
-  }
-  /**
-   * 九宫
-   */
-  getJiugong(color) {
-    if (color === PLAYER_COLOR.RED) {
-      return [
-        [this.grid[0][3], this.grid[0][4], this.grid[0][4]],
-        [this.grid[1][3], this.grid[1][4], this.grid[1][4]],
-        [this.grid[2][3], this.grid[2][4], this.grid[2][4]]
-      ]
-    } else {
-      return [
-        [this.grid[9][5], this.grid[9][4], this.grid[9][3]],
-        [this.grid[8][5], this.grid[8][4], this.grid[8][3]],
-        [this.grid[7][5], this.grid[7][4], this.grid[7][3]]
-      ]
-    }
   }
 }

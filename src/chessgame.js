@@ -112,7 +112,11 @@ export default class Chessgame {
   }
   playChess(from, to) {
     if (this.canPlay) {
-      this.player.playChess(from, to)
+      const playStatus = this.player.playChess(from, to)
+
+      if (!playStatus) {
+        return
+      }
 
       // 设置棋盘状态, 返回false说明棋局已决出胜负
       if (this.checkChessGameStatus()) {

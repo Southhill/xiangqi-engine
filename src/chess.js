@@ -641,6 +641,17 @@ class ZuChess extends BaseChess {
     return result.filter(po => this.filterSelfChesses(chessboard, po))
   }
 }
+function createStandardChessMap() {
+  return [
+    ...JIANG_SHUAI_Chess.create(),
+    ...ShiChess.create(),
+    ...XIANGChess.create(),
+    ...MaChess.create(),
+    ...JuChess.create(),
+    ...PaoChess.create(),
+    ...ZuChess.create()
+  ]
+}
 /**
  * 通用的生成棋子的方法
  * @param {Object} info
@@ -685,5 +696,6 @@ export {
   MaChess,
   JuChess,
   PaoChess,
-  ZuChess
+  ZuChess,
+  createStandardChessMap
 }

@@ -72,9 +72,13 @@ export default class Player {
     this.chessboard = chessboard
   }
   /**
-   * 棋手下棋
+   * 棋手下棋，返回`false`表明预定下棋位置错误
    */
   playChess(from, to) {
+    if (this.allChessTread.indexOf(to) === -1) {
+      return false
+    }
+
     const chess = this.chessboard.getChess(from)
 
     if (this.chessboard.getChess(to)) {
@@ -82,5 +86,7 @@ export default class Player {
     }
 
     chess.setPosition(to)
+
+    return true
   }
 }
