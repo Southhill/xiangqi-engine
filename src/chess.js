@@ -641,6 +641,42 @@ class ZuChess extends BaseChess {
     return result.filter(po => this.filterSelfChesses(chessboard, po))
   }
 }
+/**
+ * 通用的生成棋子的方法
+ * @param {Object} info
+ */
+export default function createChess(info = {}) {
+  const { type, color, position } = info
+  let chess = null
+
+  switch (type) {
+    case CHESS_TYPE.JIANG_SHUAI:
+      chess = new JIANG_SHUAI_Chess(position, color)
+      break
+    case CHESS_TYPE.SHI:
+      chess = new ShiChess(position, color)
+      break
+    case CHESS_TYPE.XIANG:
+      chess = new XIANGChess(position, color)
+      break
+    case CHESS_TYPE.MA:
+      chess = new MaChess(position, color)
+      break
+    case CHESS_TYPE.JU:
+      chess = new JuChess(position, color)
+      break
+    case CHESS_TYPE.PAO:
+      chess = new PaoChess(position, color)
+      break
+    case CHESS_TYPE.ZU:
+      chess = new ZuChess(position, color)
+      break
+    default:
+      throw new Error('未知的棋子类型')
+  }
+
+  return chess
+}
 
 export {
   JIANG_SHUAI_Chess,
