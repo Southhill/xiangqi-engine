@@ -2,4 +2,4 @@
 
 ## description
 
-xiangqi is china chess game
+xiangqi is china chess game engine
