@@ -59,6 +59,13 @@ export default class Player {
   }
 
   /**
+   * 获取己方某个位置的棋子
+   */
+  getSelfChess(position) {
+    return this.chessPool.find(chess => chess.position === position)
+  }
+
+  /**
    * 设置棋手的颜色
    * @param {String} color
    */
@@ -75,11 +82,14 @@ export default class Player {
    * 棋手下棋，返回`false`表明预定下棋位置错误
    */
   playChess(from, to) {
-    if (this.allChessTread.indexOf(to) === -1) {
+    // 获取from处的棋子
+    const chess = this.getSelfChess(from)
+    // 获取所有下法
+    const treads = chess.getTreads(this.chessboard)
+
+    if (treads.indexOf(to) === -1) {
       return false
     }
-
-    const chess = this.chessboard.getChess(from)
 
     if (this.chessboard.getChess(to)) {
       this.chessboard.discard(to)
