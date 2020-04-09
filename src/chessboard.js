@@ -19,49 +19,53 @@ export default class Chessboard {
     this.chessPool = []
   }
   get discardedChessPool() {
-    return this.chessPool.filter(chess => chess.position === DISCARDED_CHESS)
+    return this.chessPool.filter((chess) => chess.position === DISCARDED_CHESS)
   }
   get usableChessPool() {
-    return this.chessPool.filter(chess => chess.position !== DISCARDED_CHESS)
+    return this.chessPool.filter((chess) => chess.position !== DISCARDED_CHESS)
   }
   get jiangshuaiChesses() {
     return this.usableChessPool.filter(
-      chess => chess.type === CHESS_TYPE.JIANG_SHUAI
+      (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
     )
   }
   get chessboardScope() {
     return [
       [0, 0],
-      [9, 8]
+      [9, 8],
     ]
-  }
-  get ownChessboardScope(color) {
-    if (color === PLAYER_COLOR.RED) {
-      return [
-        [0, 0],
-        [4, 8]
-      ]
-    } else {
-      return [
-        [5, 0],
-        [9, 8]
-      ]
-    }
   }
   /**
    * 初始化棋谱
    */
   initChessMap(chessMap) {
     if (!Array.isArray(chessMap)) {
-      chessMap.forEach(item => {
+      chessMap.forEach((item) => {
         this.chessPool.push(createChess(item))
       })
     } else {
       const allChess = createStandardChessMap()
 
-      allChess.forEach(chess => {
+      allChess.forEach((chess) => {
         this.chessPool.push(chess)
       })
+    }
+  }
+  /**
+   * 获取某颜色棋手的己方棋盘位置的矩形信息
+   * @param {String} color
+   */
+  getOwnChessboardScope(color) {
+    if (color === PLAYER_COLOR.RED) {
+      return [
+        [0, 0],
+        [4, 8],
+      ]
+    } else {
+      return [
+        [5, 0],
+        [9, 8],
+      ]
     }
   }
   /**
@@ -69,21 +73,24 @@ export default class Chessboard {
    * @param {String} position
    */
   getChess(position) {
-    return this.usableChessPool.find(chess => chess.position === position)
+    return this.usableChessPool.find((chess) => chess.position === position)
   }
   /**
    * 从废弃棋子池中捞取某一手吃掉的棋子
    * @param {Number} playOrder
    */
   getDiscardedChess(playOrder) {
-    return this.discardedChessPool.find(chess => chess.playOrder === playOrder)
+    return this.discardedChessPool.find(
+      (chess) => chess.playOrder === playOrder
+    )
   }
   /**
    * 棋盘给定位置存在有效的棋子
    */
   hasChess(position) {
     return (
-      this.usableChessPool.findIndex(chess => chess.position === position) > -1
+      this.usableChessPool.findIndex((chess) => chess.position === position) >
+      -1
     )
   }
   /**
@@ -113,7 +120,7 @@ export default class Chessboard {
    */
   getChessForColumn(index) {
     return this.usableChessPool
-      .filter(chess => chess.point[1] === index)
+      .filter((chess) => chess.point[1] === index)
       .sort((chessA, chessB) => chessB.point[0] > chessA.point[0])
   }
   /**
@@ -121,7 +128,7 @@ export default class Chessboard {
    */
   getChessForRow(index) {
     return this.usableChessPool
-      .filter(chess => chess.point[0] === index)
+      .filter((chess) => chess.point[0] === index)
       .sort((chessA, chessB) => chessB.point[1] > chessA.point[1])
   }
 }

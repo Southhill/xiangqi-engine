@@ -222,7 +222,7 @@ class XIANGChess extends BaseChess {
     ]
       .filter((pos) => {
         // 过滤掉超出棋格范围的位置
-        const scope = chessboard.ownChessboardScope
+        const scope = chessboard.getOwnChessboardScope(this.color)
         const position = pos.split(',').map(Number)
 
         return posInRange(position, scope)

@@ -2,8 +2,9 @@
   "name": "xiangqi",
   "version": "1.0.0",
   "description": "chinese xiangqi game engine",
-  "main": "main.js",
+  "main": "./dist/dist.umd.js",
   "scripts": {
+    "build": "rollup main.js -f umd -n result -o ./dist/dist.umd.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Cao",
