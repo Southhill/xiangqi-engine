@@ -69,13 +69,22 @@ export default class Chessboard {
    * @param {String} position
    */
   getChess(position) {
-    return this.chessPool.find(chess => chess.position === position)
+    return this.usableChessPool.find(chess => chess.position === position)
+  }
+  /**
+   * 从废弃棋子池中捞取某一手吃掉的棋子
+   * @param {Number} playOrder
+   */
+  getDiscardedChess(playOrder) {
+    return this.discardedChessPool.find(chess => chess.playOrder === playOrder)
   }
   /**
    * 棋盘给定位置存在有效的棋子
    */
   hasChess(position) {
-    return this.chessPool.findIndex(chess => chess.position === position) > -1
+    return (
+      this.usableChessPool.findIndex(chess => chess.position === position) > -1
+    )
   }
   /**
    * 给定位置的棋子位于棋盘边界上
@@ -90,10 +99,14 @@ export default class Chessboard {
    * 废弃掉棋子
    * @param {String} position
    */
-  discard(position) {
+  discard(position, playOrder) {
     const discardedChess = this.getChess(position)
 
-    discardedChess.setPosition(DISCARDED_CHESS)
+    discardedChess.setPosition(DISCARDED_CHESS, () => {
+      discardedChess.playOrder = playOrder
+    })
+
+    return discardedChess
   }
   /**
    * 获取棋盘上某列的棋子

@@ -10,6 +10,10 @@ class BaseChess {
      * 该棋子的位置
      */
     this.position = position
+    /**
+     * 该棋子废弃于第几手棋
+     */
+    this.playOrder = -1
 
     /**
      * 该棋子的颜色
@@ -33,7 +37,7 @@ class BaseChess {
     this.position = position
 
     if (typeof cb === 'function') {
-      cb()
+      cb(this)
     }
   }
   /**
@@ -452,7 +456,7 @@ class PaoChess extends BaseChess {
    */
   static getCow(chessboard, paoPosition, hillPosition) {
     if (chessboard.isBorderLineChess(hillPosition)) {
-      return undefined
+      return null
     }
 
     const [paoX, paoY] = paoPosition.split(',').map(Number)
@@ -462,7 +466,7 @@ class PaoChess extends BaseChess {
       const rowChesses = chessboard.getChessForRow(paoX)
 
       if (rowChesses.length <= 2) {
-        return undefined
+        return null
       }
 
       const diffIdx = hillY > paoY ? 1 : -1
@@ -475,7 +479,7 @@ class PaoChess extends BaseChess {
       const columnChesses = chessboard.getChessForColumn(paoY)
 
       if (columnChesses.length <= 2) {
-        return undefined
+        return null
       }
 
       const diffIdx = hillX > paoX ? 1 : -1
@@ -504,7 +508,7 @@ class PaoChess extends BaseChess {
       if (chessboard.hasChess(position)) {
         const cowChess = PaoChess.getCow(chessboard, this.position, position)
 
-        if (cowChess) {
+        if (cowChess !== null) {
           result.push(cowChess.position)
         }
 
@@ -523,7 +527,7 @@ class PaoChess extends BaseChess {
       if (chessboard.hasChess(position)) {
         const cowChess = PaoChess.getCow(chessboard, this.position, position)
 
-        if (cowChess) {
+        if (cowChess !== null) {
           result.push(cowChess.position)
         }
 
@@ -542,7 +546,7 @@ class PaoChess extends BaseChess {
       if (chessboard.hasChess(position)) {
         const cowChess = PaoChess.getCow(chessboard, this.position, position)
 
-        if (cowChess) {
+        if (cowChess !== null) {
           result.push(cowChess.position)
         }
 
@@ -561,7 +565,7 @@ class PaoChess extends BaseChess {
       if (chessboard.hasChess(position)) {
         const cowChess = PaoChess.getCow(chessboard, this.position, position)
 
-        if (cowChess) {
+        if (cowChess !== null) {
           result.push(cowChess.position)
         }
 

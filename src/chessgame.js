@@ -28,6 +28,10 @@ export default class Chessgame {
      * 棋盘
      */
     this.chessboard = null
+    /**
+     * 走法记录表：用于悔棋，撤销
+     */
+    this.playRecord = []
   }
   /**
    * 棋盘处于将军状态
@@ -78,7 +82,7 @@ export default class Chessgame {
       letFirst !== undefined &&
       [firstPlayerName, secondPlayerName].indexOf(letFirst) === -1
     ) {
-      throw new Error('让先的值为任一棋手的名称！')
+      throw new Error('让先[letFirst]的值为任一棋手的名称！')
     }
 
     const firstPlayer = new Player(firstPlayerName)
@@ -115,12 +119,20 @@ export default class Chessgame {
     this.player.sitdown(this.chessboard)
     this.nextPlayer.sitdown(this.chessboard)
   }
+  /**
+   * 棋局执行下棋动作
+   * @param {String} from
+   * @param {String} to
+   */
   playChess(from, to) {
     if (this.canPlay) {
-      const playStatus = this.player.playChess(from, to)
+      const playOrder = this.playRecord.length + 1
+      const playInfo = this.player.playChess(from, to, playOrder)
 
-      if (!playStatus) {
+      if (playInfo === null) {
         return
+      } else {
+        this.playRecord.push(playInfo)
       }
 
       // 设置棋盘状态, 返回false说明棋局已决出胜负
@@ -130,6 +142,26 @@ export default class Chessgame {
       }
     }
   }
+  /**
+   * 悔棋
+   */
+  regretChess() {
+    const record = this.playRecord.pop()
+    const [playOrder, chess, track, discardedChess] = record.split(':')
+    const [from, to] = track.split('=>')
+
+    this.chessboard.getChess(to).setPosition(from)
+
+    if (discardedChess !== undefined) {
+      // 有吃棋子的行为，将吃掉的棋子恢复原位
+      const restoredChess = this.chessboard.getDiscardedChess(Number(playOrder))
+
+      restoredChess.setPosition(to, () => {
+        restoredChess.playOrder = -1
+      })
+    }
+  }
+
   /**
    * 棋局控制权轮转到下一位
    */
