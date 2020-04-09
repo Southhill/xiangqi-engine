@@ -19,10 +19,6 @@ class BaseChess {
      * 该棋子的颜色
      */
     this.color = color
-    /**
-     * 棋盘
-     */
-    this.chessboard = null
   }
   /**
    * 获取棋子的坐标，以数组的形式返回
