@@ -28,16 +28,6 @@ export default class Chessgame {
      * 棋盘
      */
     this.chessboard = null
-    /**
-     * 棋手名映射表
-     */
-    this.otherPlayerNameMap = null
-  }
-  /**
-   * 当前执棋者的名称
-   */
-  get currentPlayerName() {
-    return this.player.name
   }
   /**
    * 棋盘处于将军状态
@@ -46,8 +36,8 @@ export default class Chessgame {
     return [
       this.status === CHESSGAME_STATUS.JIANG_JUN,
       {
-        jiangjunzhe: this.currentPlayerName,
-        bei_jiangjunzhe: this.otherPlayerNameMap[this.currentPlayerName]
+        jiangjunzhe: this.player.name,
+        bei_jiangjunzhe: this.nextPlayer.name
       }
     ]
   }
@@ -69,7 +59,13 @@ export default class Chessgame {
     return Math.random() > 0.5
   }
 
-  setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang', chessMap) {
+  setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang', opts = {}) {
+    /**
+     * chessMap：初始化的棋谱
+     * letFirst：让先，该棋手先行
+     */
+    const { chessMap, letFirst } = opts
+
     // 初始化棋手
     if (
       typeof firstPlayerName !== 'string' ||
@@ -78,28 +74,37 @@ export default class Chessgame {
     ) {
       throw new Error('棋手名称不能重复，必须唯一！')
     }
+    if (
+      letFirst !== undefined &&
+      [firstPlayerName, secondPlayerName].indexOf(letFirst) === -1
+    ) {
+      throw new Error('让先的值为任一棋手的名称！')
+    }
 
     const firstPlayer = new Player(firstPlayerName)
     const secondPlayer = new Player(secondPlayerName)
     const guessFirstResult = Chessgame.guessFirst()
+    const belongtoPlayer = isFirst => {
+      if (isFirst) {
+        firstPlayer.setColor(PLAYER_COLOR.RED)
+        secondPlayer.setColor(PLAYER_COLOR.BLACK)
 
-    this.otherPlayerNameMap = {
-      [firstPlayerName]: secondPlayerName,
-      [secondPlayerName]: firstPlayerName
+        this.player = firstPlayer
+        this.nextPlayer = secondPlayer
+      } else {
+        firstPlayer.setColor(PLAYER_COLOR.BLACK)
+        secondPlayer.setColor(PLAYER_COLOR.RED)
+
+        this.player = secondPlayer
+        this.nextPlayer = firstPlayer
+      }
     }
 
-    if (guessFirstResult) {
-      firstPlayer.setColor(PLAYER_COLOR.RED)
-      secondPlayer.setColor(PLAYER_COLOR.BLACK)
-
-      this.player = firstPlayer
-      this.nextPlayer = secondPlayer
+    // 如果有设置让先，则让先，否则猜先
+    if (letFirst !== undefined) {
+      belongtoPlayer(letFirst === firstPlayerName)
     } else {
-      firstPlayer.setColor(PLAYER_COLOR.BLACK)
-      secondPlayer.setColor(PLAYER_COLOR.RED)
-
-      this.player = secondPlayer
-      this.nextPlayer = firstPlayer
+      belongtoPlayer(guessFirstResult)
     }
 
     // 初始化棋盘
@@ -155,7 +160,7 @@ export default class Chessgame {
     // 对方棋手的将帅棋子已经被吃
     if (this.nextPlayer.lostJiangshuaiChess) {
       this.status = CHESSGAME_STATUS.WIN
-      this.winner = this.currentPlayerName
+      this.winner = this.player.name
 
       return false
     }

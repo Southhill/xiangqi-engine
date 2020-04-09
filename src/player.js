@@ -30,7 +30,7 @@ export default class Player {
   }
 
   /**
-   * 棋手当前在棋局上的棋子
+   * 棋手当前在棋局上的所有己方棋子
    */
   get chessPool() {
     return this.chessboard.usableChessPool.filter(
