@@ -160,6 +160,8 @@ export default class Chessgame {
         restoredChess.playOrder = -1
       })
     }
+
+    this.turnToNext()
   }
 
   /**

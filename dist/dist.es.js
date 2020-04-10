@@ -1194,6 +1194,8 @@ class Chessgame {
         restoredChess.playOrder = -1;
       });
     }
+
+    this.turnToNext();
   }
 
   /**
