@@ -41,8 +41,8 @@ export default class Chessgame {
       this.status === CHESSGAME_STATUS.JIANG_JUN,
       {
         jiangjunzhe: this.player.name,
-        bei_jiangjunzhe: this.nextPlayer.name
-      }
+        bei_jiangjunzhe: this.nextPlayer.name,
+      },
     ]
   }
   /**
@@ -66,9 +66,9 @@ export default class Chessgame {
   setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang', opts = {}) {
     /**
      * chessMap：初始化的棋谱
-     * letFirst：让先，该棋手先行
+     * letFirstPlayer：让先，该棋手先行
      */
-    const { chessMap, letFirst } = opts
+    const { chessMap, letFirstPlayer, isBlackFirst = false } = opts
 
     // 初始化棋手
     if (
@@ -79,16 +79,16 @@ export default class Chessgame {
       throw new Error('棋手名称不能重复，必须唯一！')
     }
     if (
-      letFirst !== undefined &&
-      [firstPlayerName, secondPlayerName].indexOf(letFirst) === -1
+      letFirstPlayer !== undefined &&
+      [firstPlayerName, secondPlayerName].indexOf(letFirstPlayer) === -1
     ) {
-      throw new Error('让先[letFirst]的值为任一棋手的名称！')
+      throw new Error('让先[letFirstPlayer]的值为任一棋手的名称！')
     }
 
     const firstPlayer = new Player(firstPlayerName)
     const secondPlayer = new Player(secondPlayerName)
     const guessFirstResult = Chessgame.guessFirst()
-    const belongtoPlayer = isFirst => {
+    const belongtoPlayer = (isFirst) => {
       if (isFirst) {
         firstPlayer.setColor(PLAYER_COLOR.RED)
         secondPlayer.setColor(PLAYER_COLOR.BLACK)
@@ -105,8 +105,8 @@ export default class Chessgame {
     }
 
     // 如果有设置让先，则让先，否则猜先
-    if (letFirst !== undefined) {
-      belongtoPlayer(letFirst === firstPlayerName)
+    if (letFirstPlayer !== undefined) {
+      belongtoPlayer(letFirstPlayer === firstPlayerName)
     } else {
       belongtoPlayer(guessFirstResult)
     }
@@ -118,6 +118,11 @@ export default class Chessgame {
 
     this.player.sitdown(this.chessboard)
     this.nextPlayer.sitdown(this.chessboard)
+
+    // 黑方先行，多见于象棋残谱破解
+    if (isBlackFirst) {
+      this.turnToNext()
+    }
   }
   /**
    * 棋局执行下棋动作
