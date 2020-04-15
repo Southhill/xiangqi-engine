@@ -39,7 +39,7 @@ export default class Chessboard {
    * 初始化棋谱
    */
   initChessMap(chessMap) {
-    if (!Array.isArray(chessMap)) {
+    if (Array.isArray(chessMap)) {
       chessMap.forEach((item) => {
         this.chessPool.push(createChess(item))
       })
