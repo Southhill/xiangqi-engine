@@ -1068,6 +1068,12 @@ class Chessgame {
     this.playRecord = [];
   }
   /**
+   * 当前在棋盘内的的棋子
+   */
+  get chessPool() {
+    return this.chessboard.usableChessPool
+  }
+  /**
    * 棋盘处于将军状态
    */
   get isJiangjun() {
