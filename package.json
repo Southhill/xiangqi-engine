@@ -9,6 +9,18 @@
   },
   "author": "Cao",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/southhill/xiangqi.git"
+  },
+  "keywords": [
+    "chess",
+    "game"
+  ],
+  "bugs": {
+    "url": "https://github.com/southhill/xiangqi/issues"
+  },
+  "homepage": "https://github.com/southhill/xiangqi#readme",
   "devDependencies": {
     "rollup": "^2.4.0"
   }
