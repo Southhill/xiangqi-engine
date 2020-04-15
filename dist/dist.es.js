@@ -248,7 +248,7 @@ class BaseChess {
     this.position = position;
 
     if (typeof cb === 'function') {
-      cb(this);
+      cb.call(this, this);
     }
   }
   /**
@@ -294,7 +294,7 @@ class JIANG_SHUAI_Chess extends BaseChess {
   static create() {
     return [
       new JIANG_SHUAI_Chess('0,4', PLAYER_COLOR.RED),
-      new JIANG_SHUAI_Chess('9,4', PLAYER_COLOR.BLACK),
+      new JIANG_SHUAI_Chess('9,4', PLAYER_COLOR.BLACK)
     ]
   }
   /**
@@ -303,10 +303,10 @@ class JIANG_SHUAI_Chess extends BaseChess {
   getTreads(chessboard) {
     const [x, y] = this.point;
     const positions = [`${x + 1},y`, `${x - 1},y`, `x,${y + 1}`, `x,${y - 1}`]
-      .filter((pos) => {
+      .filter(pos => {
         this.walkScope.indexOf(pos) > -1;
       })
-      .filter((po) => this.filterSelfChesses(chessboard, po));
+      .filter(po => this.filterSelfChesses(chessboard, po));
 
     const otherJiangshuaiChess = this.zhiquzhongjun(chessboard);
 
@@ -322,14 +322,14 @@ class JIANG_SHUAI_Chess extends BaseChess {
    */
   zhiquzhongjun(chessboard) {
     const selfJiangshuaiChess = chessboard.jiangshuaiChesses.filter(
-      (chess) => chess.color === this.color
+      chess => chess.color === this.color
     );
     const chesses = chessboard.getChessForColumn(selfJiangshuaiChess.point[1]);
 
     return (
       chesses.length === 2 &&
-      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG_SHUAI) &&
-      chesses.find((chess) => chess.position !== selfJiangshuaiChess.position)
+      chesses.every(chess => chess.type === CHESS_TYPE.JIANG_SHUAI) &&
+      chesses.find(chess => chess.position !== selfJiangshuaiChess.position)
     )
   }
 }
@@ -367,7 +367,7 @@ class ShiChess extends BaseChess {
       new ShiChess('0,3', PLAYER_COLOR.RED),
       new ShiChess('0,5', PLAYER_COLOR.RED),
       new ShiChess('9,5', PLAYER_COLOR.BLACK),
-      new ShiChess('9,3', PLAYER_COLOR.BLACK),
+      new ShiChess('9,3', PLAYER_COLOR.BLACK)
     ]
   }
   /**
@@ -379,14 +379,14 @@ class ShiChess extends BaseChess {
       `${x + 1},${y + 1}`,
       `${x - 1},${y - 1}`,
       `${x - 1},${y + 1}`,
-      `${x + 1},${y - 1}`,
+      `${x + 1},${y - 1}`
     ];
 
     return tempPositions
-      .filter((pos) => {
+      .filter(pos => {
         this.walkScope.indexOf(pos) > -1;
       })
-      .filter((po) => this.filterSelfChesses(chessboard, po))
+      .filter(po => this.filterSelfChesses(chessboard, po))
   }
 }
 /**
@@ -419,7 +419,7 @@ class XIANGChess extends BaseChess {
       new XIANGChess('0,2', PLAYER_COLOR.RED),
       new XIANGChess('0,6', PLAYER_COLOR.RED),
       new XIANGChess('9,6', PLAYER_COLOR.BLACK),
-      new XIANGChess('9,2', PLAYER_COLOR.BLACK),
+      new XIANGChess('9,2', PLAYER_COLOR.BLACK)
     ]
   }
   /**
@@ -433,22 +433,22 @@ class XIANGChess extends BaseChess {
       `${x + 3},${y + 3}`,
       `${x - 3},${y - 3}`,
       `${x - 3},${y + 3}`,
-      `${x + 3},${y - 3}`,
+      `${x + 3},${y - 3}`
     ]
-      .filter((pos) => {
+      .filter(pos => {
         // 过滤掉超出棋格范围的位置
         const scope = chessboard.getOwnChessboardScope(this.color);
         const position = pos.split(',').map(Number);
 
         return posInRange(position, scope)
       })
-      .filter((po) => {
+      .filter(po => {
         // 处理塞象眼的位置
         const position = halfPoint(this.position, po);
 
         return !chessboard.hasChess(position)
       })
-      .filter((po) => this.filterSelfChesses(chessboard, po));
+      .filter(po => this.filterSelfChesses(chessboard, po));
 
     return result
   }
@@ -483,7 +483,7 @@ class MaChess extends BaseChess {
       new MaChess('0,1', PLAYER_COLOR.RED),
       new MaChess('0,7', PLAYER_COLOR.RED),
       new MaChess('9,7', PLAYER_COLOR.BLACK),
-      new MaChess('9,1', PLAYER_COLOR.BLACK),
+      new MaChess('9,1', PLAYER_COLOR.BLACK)
     ]
   }
   /**
@@ -505,22 +505,22 @@ class MaChess extends BaseChess {
       `${x - 2},${y - 1}`,
       // 第四象限
       `${x - 2},${y + 1}`,
-      `${x - 1},${y + 2}`,
+      `${x - 1},${y + 2}`
     ]
-      .filter((pos) => {
+      .filter(pos => {
         // 过滤掉超出棋格范围的位置
         const scope = chessboard.chessboardScope;
         const position = pos.split(',').map(Number);
 
         return posInRange(position, scope)
       })
-      .filter((po) => {
+      .filter(po => {
         // 处理蹩马腿的位置
         const position = horseLegPoint(this.position, po);
 
         return !chessboard.hasChess(position)
       })
-      .filter((po) => this.filterSelfChesses(chessboard, po));
+      .filter(po => this.filterSelfChesses(chessboard, po));
 
     return result
   }
@@ -555,7 +555,7 @@ class JuChess extends BaseChess {
       new JuChess('0,0', PLAYER_COLOR.RED),
       new JuChess('0,8', PLAYER_COLOR.RED),
       new JuChess('9,8', PLAYER_COLOR.BLACK),
-      new JuChess('9,0', PLAYER_COLOR.BLACK),
+      new JuChess('9,0', PLAYER_COLOR.BLACK)
     ]
   }
   /**
@@ -623,7 +623,7 @@ class JuChess extends BaseChess {
       }
     }
 
-    return result.filter((po) => this.filterSelfChesses(chessboard, po))
+    return result.filter(po => this.filterSelfChesses(chessboard, po))
   }
 }
 /**
@@ -656,7 +656,7 @@ class PaoChess extends BaseChess {
       new JuChess('2,1', PLAYER_COLOR.RED),
       new JuChess('2,7', PLAYER_COLOR.RED),
       new JuChess('7,7', PLAYER_COLOR.BLACK),
-      new JuChess('7,1', PLAYER_COLOR.BLACK),
+      new JuChess('7,1', PLAYER_COLOR.BLACK)
     ]
   }
   /**
@@ -682,7 +682,7 @@ class PaoChess extends BaseChess {
 
       const diffIdx = hillY > paoY ? 1 : -1;
       const hillIndex = rowChesses.findIndex(
-        (chess) => chess.position === hillPosition
+        chess => chess.position === hillPosition
       );
 
       return rowChesses[hillIndex + diffIdx]
@@ -695,7 +695,7 @@ class PaoChess extends BaseChess {
 
       const diffIdx = hillX > paoX ? 1 : -1;
       const hillIndex = columnChesses.findIndex(
-        (chess) => chess.position === hillPosition
+        chess => chess.position === hillPosition
       );
 
       return columnChesses[hillIndex + diffIdx]
@@ -786,7 +786,7 @@ class PaoChess extends BaseChess {
       }
     }
 
-    return result.filter((po) => this.filterSelfChesses(chessboard, po))
+    return result.filter(po => this.filterSelfChesses(chessboard, po))
   }
 }
 /**
@@ -835,7 +835,7 @@ class ZuChess extends BaseChess {
       new ZuChess('6,6', PLAYER_COLOR.BLACK),
       new ZuChess('6,4', PLAYER_COLOR.BLACK),
       new ZuChess('6,2', PLAYER_COLOR.BLACK),
-      new ZuChess('6,0', PLAYER_COLOR.BLACK),
+      new ZuChess('6,0', PLAYER_COLOR.BLACK)
     ]
   }
   /**
@@ -853,7 +853,7 @@ class ZuChess extends BaseChess {
 
     result.push(`${x + diffIdx},${y}`);
 
-    return result.filter((po) => this.filterSelfChesses(chessboard, po))
+    return result.filter(po => this.filterSelfChesses(chessboard, po))
   }
 }
 function createStandardChessMap() {
@@ -864,7 +864,7 @@ function createStandardChessMap() {
     ...MaChess.create(),
     ...JuChess.create(),
     ...PaoChess.create(),
-    ...ZuChess.create(),
+    ...ZuChess.create()
   ]
 }
 /**
@@ -942,7 +942,7 @@ class Chessboard {
    * 初始化棋谱
    */
   initChessMap(chessMap) {
-    if (!Array.isArray(chessMap)) {
+    if (Array.isArray(chessMap)) {
       chessMap.forEach((item) => {
         this.chessPool.push(createChess(item));
       });
@@ -1075,8 +1075,8 @@ class Chessgame {
       this.status === CHESSGAME_STATUS.JIANG_JUN,
       {
         jiangjunzhe: this.player.name,
-        bei_jiangjunzhe: this.nextPlayer.name
-      }
+        bei_jiangjunzhe: this.nextPlayer.name,
+      },
     ]
   }
   /**
@@ -1100,9 +1100,9 @@ class Chessgame {
   setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang', opts = {}) {
     /**
      * chessMap：初始化的棋谱
-     * letFirst：让先，该棋手先行
+     * letFirstPlayer：让先，该棋手先行
      */
-    const { chessMap, letFirst } = opts;
+    const { chessMap, letFirstPlayer, isBlackFirst = false } = opts;
 
     // 初始化棋手
     if (
@@ -1113,16 +1113,16 @@ class Chessgame {
       throw new Error('棋手名称不能重复，必须唯一！')
     }
     if (
-      letFirst !== undefined &&
-      [firstPlayerName, secondPlayerName].indexOf(letFirst) === -1
+      letFirstPlayer !== undefined &&
+      [firstPlayerName, secondPlayerName].indexOf(letFirstPlayer) === -1
     ) {
-      throw new Error('让先[letFirst]的值为任一棋手的名称！')
+      throw new Error('让先[letFirstPlayer]的值为任一棋手的名称！')
     }
 
     const firstPlayer = new Player(firstPlayerName);
     const secondPlayer = new Player(secondPlayerName);
     const guessFirstResult = Chessgame.guessFirst();
-    const belongtoPlayer = isFirst => {
+    const belongtoPlayer = (isFirst) => {
       if (isFirst) {
         firstPlayer.setColor(PLAYER_COLOR.RED);
         secondPlayer.setColor(PLAYER_COLOR.BLACK);
@@ -1139,8 +1139,8 @@ class Chessgame {
     };
 
     // 如果有设置让先，则让先，否则猜先
-    if (letFirst !== undefined) {
-      belongtoPlayer(letFirst === firstPlayerName);
+    if (letFirstPlayer !== undefined) {
+      belongtoPlayer(letFirstPlayer === firstPlayerName);
     } else {
       belongtoPlayer(guessFirstResult);
     }
@@ -1152,6 +1152,11 @@ class Chessgame {
 
     this.player.sitdown(this.chessboard);
     this.nextPlayer.sitdown(this.chessboard);
+
+    // 黑方先行，多见于象棋残谱破解
+    if (isBlackFirst) {
+      this.turnToNext();
+    }
   }
   /**
    * 棋局执行下棋动作
