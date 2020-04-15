@@ -38,7 +38,7 @@ export function horseLegPoint(pointStart, pointEnd) {
 export function i18ner(str, opts = {}) {
   const i18nMap = Chessgame.i18n
 
-  if (Object.toString.call(i18nMap).slice(8, -1) !== 'Object') {
+  if (Object.prototype.toString.call(i18nMap).slice(8, -1) !== 'Object') {
     return str
   }
 
