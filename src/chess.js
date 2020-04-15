@@ -2,7 +2,7 @@
  * 棋子
  */
 import { CHESS_TYPE, PLAYER_COLOR } from './map'
-import { posInRange, halfPoint, horseLegPoint } from './utils'
+import { posInRange, halfPoint, horseLegPoint, i18ner } from './utils'
 
 class BaseChess {
   constructor(position, color) {
@@ -57,6 +57,10 @@ class JIANG_SHUAI_Chess extends BaseChess {
      * 棋子类型
      */
     this.type = CHESS_TYPE.JIANG_SHUAI
+    /**
+     * 棋子名称
+     */
+    this.name = color === PLAYER_COLOR.RED ? i18ner('帥') : i18ner('将')
   }
   /**
    * 棋子位置的别名
@@ -79,7 +83,7 @@ class JIANG_SHUAI_Chess extends BaseChess {
   static create() {
     return [
       new JIANG_SHUAI_Chess('0,4', PLAYER_COLOR.RED),
-      new JIANG_SHUAI_Chess('9,4', PLAYER_COLOR.BLACK)
+      new JIANG_SHUAI_Chess('9,4', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -88,10 +92,10 @@ class JIANG_SHUAI_Chess extends BaseChess {
   getTreads(chessboard) {
     const [x, y] = this.point
     const positions = [`${x + 1},y`, `${x - 1},y`, `x,${y + 1}`, `x,${y - 1}`]
-      .filter(pos => {
+      .filter((pos) => {
         this.walkScope.indexOf(pos) > -1
       })
-      .filter(po => this.filterSelfChesses(chessboard, po))
+      .filter((po) => this.filterSelfChesses(chessboard, po))
 
     const otherJiangshuaiChess = this.zhiquzhongjun(chessboard)
 
@@ -107,14 +111,14 @@ class JIANG_SHUAI_Chess extends BaseChess {
    */
   zhiquzhongjun(chessboard) {
     const selfJiangshuaiChess = chessboard.jiangshuaiChesses.filter(
-      chess => chess.color === this.color
+      (chess) => chess.color === this.color
     )
     const chesses = chessboard.getChessForColumn(selfJiangshuaiChess.point[1])
 
     return (
       chesses.length === 2 &&
-      chesses.every(chess => chess.type === CHESS_TYPE.JIANG_SHUAI) &&
-      chesses.find(chess => chess.position !== selfJiangshuaiChess.position)
+      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG_SHUAI) &&
+      chesses.find((chess) => chess.position !== selfJiangshuaiChess.position)
     )
   }
 }
@@ -128,6 +132,10 @@ class ShiChess extends BaseChess {
      * 棋子类型
      */
     this.type = CHESS_TYPE.SHI
+    /**
+     * 棋子名称
+     */
+    this.name = color === PLAYER_COLOR.RED ? i18ner('仕') : i18ner('士')
   }
   /**
    * 棋子位置的别名
@@ -152,7 +160,7 @@ class ShiChess extends BaseChess {
       new ShiChess('0,3', PLAYER_COLOR.RED),
       new ShiChess('0,5', PLAYER_COLOR.RED),
       new ShiChess('9,5', PLAYER_COLOR.BLACK),
-      new ShiChess('9,3', PLAYER_COLOR.BLACK)
+      new ShiChess('9,3', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -164,14 +172,14 @@ class ShiChess extends BaseChess {
       `${x + 1},${y + 1}`,
       `${x - 1},${y - 1}`,
       `${x - 1},${y + 1}`,
-      `${x + 1},${y - 1}`
+      `${x + 1},${y - 1}`,
     ]
 
     return tempPositions
-      .filter(pos => {
+      .filter((pos) => {
         this.walkScope.indexOf(pos) > -1
       })
-      .filter(po => this.filterSelfChesses(chessboard, po))
+      .filter((po) => this.filterSelfChesses(chessboard, po))
   }
 }
 /**
@@ -184,6 +192,10 @@ class XIANGChess extends BaseChess {
      * 棋子类型
      */
     this.type = CHESS_TYPE.XIANG
+    /**
+     * 棋子名称
+     */
+    this.name = color === PLAYER_COLOR.RED ? i18ner('相') : i18ner('象')
   }
   /**
    * 棋子位置的别名
@@ -204,7 +216,7 @@ class XIANGChess extends BaseChess {
       new XIANGChess('0,2', PLAYER_COLOR.RED),
       new XIANGChess('0,6', PLAYER_COLOR.RED),
       new XIANGChess('9,6', PLAYER_COLOR.BLACK),
-      new XIANGChess('9,2', PLAYER_COLOR.BLACK)
+      new XIANGChess('9,2', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -218,22 +230,22 @@ class XIANGChess extends BaseChess {
       `${x + 3},${y + 3}`,
       `${x - 3},${y - 3}`,
       `${x - 3},${y + 3}`,
-      `${x + 3},${y - 3}`
+      `${x + 3},${y - 3}`,
     ]
-      .filter(pos => {
+      .filter((pos) => {
         // 过滤掉超出棋格范围的位置
         const scope = chessboard.getOwnChessboardScope(this.color)
         const position = pos.split(',').map(Number)
 
         return posInRange(position, scope)
       })
-      .filter(po => {
+      .filter((po) => {
         // 处理塞象眼的位置
         const position = halfPoint(this.position, po)
 
         return !chessboard.hasChess(position)
       })
-      .filter(po => this.filterSelfChesses(chessboard, po))
+      .filter((po) => this.filterSelfChesses(chessboard, po))
 
     return result
   }
@@ -248,6 +260,10 @@ class MaChess extends BaseChess {
      * 棋子类型
      */
     this.type === CHESS_TYPE.MA
+    /**
+     * 棋子名称
+     */
+    this.name = i18ner('馬')
   }
   /**
    * 棋子位置的别名
@@ -268,7 +284,7 @@ class MaChess extends BaseChess {
       new MaChess('0,1', PLAYER_COLOR.RED),
       new MaChess('0,7', PLAYER_COLOR.RED),
       new MaChess('9,7', PLAYER_COLOR.BLACK),
-      new MaChess('9,1', PLAYER_COLOR.BLACK)
+      new MaChess('9,1', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -290,22 +306,22 @@ class MaChess extends BaseChess {
       `${x - 2},${y - 1}`,
       // 第四象限
       `${x - 2},${y + 1}`,
-      `${x - 1},${y + 2}`
+      `${x - 1},${y + 2}`,
     ]
-      .filter(pos => {
+      .filter((pos) => {
         // 过滤掉超出棋格范围的位置
         const scope = chessboard.chessboardScope
         const position = pos.split(',').map(Number)
 
         return posInRange(position, scope)
       })
-      .filter(po => {
+      .filter((po) => {
         // 处理蹩马腿的位置
         const position = horseLegPoint(this.position, po)
 
         return !chessboard.hasChess(position)
       })
-      .filter(po => this.filterSelfChesses(chessboard, po))
+      .filter((po) => this.filterSelfChesses(chessboard, po))
 
     return result
   }
@@ -320,6 +336,10 @@ class JuChess extends BaseChess {
      * 棋子类型
      */
     this.type === CHESS_TYPE.JU
+    /**
+     * 棋子名称
+     */
+    this.name = i18ner('車')
   }
   /**
    * 棋子位置的别名
@@ -340,7 +360,7 @@ class JuChess extends BaseChess {
       new JuChess('0,0', PLAYER_COLOR.RED),
       new JuChess('0,8', PLAYER_COLOR.RED),
       new JuChess('9,8', PLAYER_COLOR.BLACK),
-      new JuChess('9,0', PLAYER_COLOR.BLACK)
+      new JuChess('9,0', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -408,7 +428,7 @@ class JuChess extends BaseChess {
       }
     }
 
-    return result.filter(po => this.filterSelfChesses(chessboard, po))
+    return result.filter((po) => this.filterSelfChesses(chessboard, po))
   }
 }
 /**
@@ -421,6 +441,10 @@ class PaoChess extends BaseChess {
      * 棋子类型
      */
     this.type = CHESS_TYPE.PAO
+    /**
+     * 棋子名称
+     */
+    this.name = i18ner('炮')
   }
   /**
    * 棋子位置的别名
@@ -441,7 +465,7 @@ class PaoChess extends BaseChess {
       new JuChess('2,1', PLAYER_COLOR.RED),
       new JuChess('2,7', PLAYER_COLOR.RED),
       new JuChess('7,7', PLAYER_COLOR.BLACK),
-      new JuChess('7,1', PLAYER_COLOR.BLACK)
+      new JuChess('7,1', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -467,7 +491,7 @@ class PaoChess extends BaseChess {
 
       const diffIdx = hillY > paoY ? 1 : -1
       const hillIndex = rowChesses.findIndex(
-        chess => chess.position === hillPosition
+        (chess) => chess.position === hillPosition
       )
 
       return rowChesses[hillIndex + diffIdx]
@@ -480,7 +504,7 @@ class PaoChess extends BaseChess {
 
       const diffIdx = hillX > paoX ? 1 : -1
       const hillIndex = columnChesses.findIndex(
-        chess => chess.position === hillPosition
+        (chess) => chess.position === hillPosition
       )
 
       return columnChesses[hillIndex + diffIdx]
@@ -571,7 +595,7 @@ class PaoChess extends BaseChess {
       }
     }
 
-    return result.filter(po => this.filterSelfChesses(chessboard, po))
+    return result.filter((po) => this.filterSelfChesses(chessboard, po))
   }
 }
 /**
@@ -584,6 +608,10 @@ class ZuChess extends BaseChess {
      * 棋子类型
      */
     this.type = CHESS_TYPE.ZU
+    /**
+     * 棋子名称
+     */
+    this.name = color === PLAYER_COLOR.RED ? i18ner('兵') : i18ner('卒')
   }
   /**
    * 棋子位置的别名
@@ -620,7 +648,7 @@ class ZuChess extends BaseChess {
       new ZuChess('6,6', PLAYER_COLOR.BLACK),
       new ZuChess('6,4', PLAYER_COLOR.BLACK),
       new ZuChess('6,2', PLAYER_COLOR.BLACK),
-      new ZuChess('6,0', PLAYER_COLOR.BLACK)
+      new ZuChess('6,0', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -638,7 +666,7 @@ class ZuChess extends BaseChess {
 
     result.push(`${x + diffIdx},${y}`)
 
-    return result.filter(po => this.filterSelfChesses(chessboard, po))
+    return result.filter((po) => this.filterSelfChesses(chessboard, po))
   }
 }
 function createStandardChessMap() {
@@ -649,7 +677,7 @@ function createStandardChessMap() {
     ...MaChess.create(),
     ...JuChess.create(),
     ...PaoChess.create(),
-    ...ZuChess.create()
+    ...ZuChess.create(),
   ]
 }
 /**
@@ -697,5 +725,5 @@ export {
   JuChess,
   PaoChess,
   ZuChess,
-  createStandardChessMap
+  createStandardChessMap,
 }

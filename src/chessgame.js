@@ -74,8 +74,17 @@ export default class Chessgame {
      * chessMap：初始化的棋谱
      * letFirstPlayer：让先，该棋手先行
      */
-    const { chessMap, letFirstPlayer, isBlackFirst = false } = opts
+    const {
+      chessMap,
+      letFirstPlayer,
+      isBlackFirst = false,
+      beforeSetup,
+      afterSetup,
+    } = opts
 
+    if (typeof beforeSetup === 'function') {
+      beforeSetup.call(this, this)
+    }
     // 初始化棋手
     if (
       typeof firstPlayerName !== 'string' ||
@@ -128,6 +137,10 @@ export default class Chessgame {
     // 黑方先行，多见于象棋残谱破解
     if (isBlackFirst) {
       this.turnToNext()
+    }
+
+    if (typeof afterSetup === 'function') {
+      afterSetup.call(this, this)
     }
   }
   /**
