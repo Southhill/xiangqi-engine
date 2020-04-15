@@ -696,10 +696,10 @@ class PaoChess extends BaseChess {
    */
   static create() {
     return [
-      new JuChess('2,1', PLAYER_COLOR.RED),
-      new JuChess('2,7', PLAYER_COLOR.RED),
-      new JuChess('7,7', PLAYER_COLOR.BLACK),
-      new JuChess('7,1', PLAYER_COLOR.BLACK),
+      new PaoChess('2,1', PLAYER_COLOR.RED),
+      new PaoChess('2,7', PLAYER_COLOR.RED),
+      new PaoChess('7,7', PLAYER_COLOR.BLACK),
+      new PaoChess('7,1', PLAYER_COLOR.BLACK),
     ]
   }
   /**
