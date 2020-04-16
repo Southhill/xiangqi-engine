@@ -110,15 +110,14 @@ class JIANG_SHUAI_Chess extends BaseChess {
    * 可以直取中军(将吃帅操作)
    */
   zhiquzhongjun(chessboard) {
-    const selfJiangshuaiChess = chessboard.jiangshuaiChesses.filter(
+    const selfJiangshuaiChess = chessboard.jiangshuaiChesses.find(
       (chess) => chess.color === this.color
     )
     const chesses = chessboard.getChessForColumn(selfJiangshuaiChess.point[1])
 
     return (
       chesses.length === 2 &&
-      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG_SHUAI) &&
-      chesses.find((chess) => chess.position !== selfJiangshuaiChess.position)
+      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG_SHUAI)
     )
   }
 }
