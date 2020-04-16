@@ -709,7 +709,11 @@ class PaoChess extends BaseChess {
    * @param {String} hillPosition
    */
   static getCow(chessboard, paoPosition, hillPosition) {
-    if (chessboard.isBorderLineChess(hillPosition)) {
+    // 如果炮不是边界上的棋子，且山是边界山的棋子，则无牛可打，返回null
+    if (
+      chessboard.isBorderLineChess(hillPosition) &&
+      !chessboard.isBorderLineChess(paoPosition)
+    ) {
       return null
     }
 
