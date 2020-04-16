@@ -55,8 +55,10 @@ export default class Chessgame {
    * 当前执棋者可以下棋
    */
   get canPlay() {
-    // 棋局处于对战状态并且当前棋手有棋子可下
-    return this.status === CHESSGAME_STATUS.VS
+    // 棋局处于对战, 或将军状态并且当前棋手有棋子可下
+    return [CHESSGAME_STATUS.VS, CHESSGAME_STATUS.JIANG_JUN].includes(
+      this.status
+    )
   }
   /**
    * 猜和

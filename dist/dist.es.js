@@ -727,7 +727,7 @@ class PaoChess extends BaseChess {
         (chess) => chess.position === hillPosition
       );
 
-      return rowChesses[hillIndex + diffIdx]
+      return rowChesses[hillIndex + diffIdx] || null
     } else {
       const columnChesses = chessboard.getChessForColumn(paoY);
 
@@ -740,7 +740,7 @@ class PaoChess extends BaseChess {
         (chess) => chess.position === hillPosition
       );
 
-      return columnChesses[hillIndex + diffIdx]
+      return columnChesses[hillIndex + diffIdx] || null
     }
   }
   /**
@@ -1136,8 +1136,10 @@ class Chessgame {
    * 当前执棋者可以下棋
    */
   get canPlay() {
-    // 棋局处于对战状态并且当前棋手有棋子可下
-    return this.status === CHESSGAME_STATUS.VS
+    // 棋局处于对战, 或将军状态并且当前棋手有棋子可下
+    return [CHESSGAME_STATUS.VS, CHESSGAME_STATUS.JIANG_JUN].includes(
+      this.status
+    )
   }
   /**
    * 猜和
