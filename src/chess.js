@@ -493,7 +493,7 @@ class PaoChess extends BaseChess {
         (chess) => chess.position === hillPosition
       )
 
-      return rowChesses[hillIndex + diffIdx]
+      return rowChesses[hillIndex + diffIdx] || null
     } else {
       const columnChesses = chessboard.getChessForColumn(paoY)
 
@@ -506,7 +506,7 @@ class PaoChess extends BaseChess {
         (chess) => chess.position === hillPosition
       )
 
-      return columnChesses[hillIndex + diffIdx]
+      return columnChesses[hillIndex + diffIdx] || null
     }
   }
   /**
