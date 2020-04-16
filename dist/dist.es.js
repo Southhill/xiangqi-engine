@@ -160,7 +160,7 @@ class Player {
     // 获取所有下法
     const treads = chess.getTreads(this.chessboard);
 
-    if (treads.indexOf(to) === -1) {
+    if (!treads.includes(to)) {
       return null
     }
 
@@ -326,9 +326,7 @@ class JIANG_SHUAI_Chess extends BaseChess {
   getTreads(chessboard) {
     const [x, y] = this.point;
     const positions = [`${x + 1},y`, `${x - 1},y`, `x,${y + 1}`, `x,${y - 1}`]
-      .filter((pos) => {
-        this.walkScope.indexOf(pos) > -1;
-      })
+      .filter((pos) => this.walkScope.includes(pos))
       .filter((po) => this.filterSelfChesses(chessboard, po));
 
     const otherJiangshuaiChess = this.zhiquzhongjun(chessboard);
@@ -409,9 +407,7 @@ class ShiChess extends BaseChess {
     ];
 
     return tempPositions
-      .filter((pos) => {
-        this.walkScope.indexOf(pos) > -1;
-      })
+      .filter((pos) => this.walkScope.includes(pos))
       .filter((po) => this.filterSelfChesses(chessboard, po))
   }
 }
@@ -460,10 +456,10 @@ class XIANGChess extends BaseChess {
   getTreads(chessboard) {
     const [x, y] = this.point;
     const result = [
-      `${x + 3},${y + 3}`,
-      `${x - 3},${y - 3}`,
-      `${x - 3},${y + 3}`,
-      `${x + 3},${y - 3}`,
+      `${x + 2},${y + 2}`,
+      `${x - 2},${y - 2}`,
+      `${x - 2},${y + 2}`,
+      `${x + 2},${y - 2}`,
     ]
       .filter((pos) => {
         // 过滤掉超出棋格范围的位置
@@ -1178,7 +1174,7 @@ class Chessgame {
     }
     if (
       letFirstPlayer !== undefined &&
-      [firstPlayerName, secondPlayerName].indexOf(letFirstPlayer) === -1
+      ![firstPlayerName, secondPlayerName].includes(letFirstPlayer)
     ) {
       throw new Error('让先[letFirstPlayer]的值为任一棋手的名称！')
     }
@@ -1284,10 +1280,8 @@ class Chessgame {
    * 判断下一位棋手的将帅棋是否被将军
    */
   checkJiangjun() {
-    return (
-      this.player.allChessTread.indexOf(
-        this.nextPlayer.jiangshuaiChess.position
-      ) > -1
+    return this.player.allChessTread.includes(
+      this.nextPlayer.jiangshuaiChess.position
     )
   }
   /**

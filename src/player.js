@@ -89,7 +89,7 @@ export default class Player {
     // 获取所有下法
     const treads = chess.getTreads(this.chessboard)
 
-    if (treads.indexOf(to) === -1) {
+    if (!treads.includes(to)) {
       return null
     }
 

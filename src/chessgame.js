@@ -97,7 +97,7 @@ export default class Chessgame {
     }
     if (
       letFirstPlayer !== undefined &&
-      [firstPlayerName, secondPlayerName].indexOf(letFirstPlayer) === -1
+      ![firstPlayerName, secondPlayerName].includes(letFirstPlayer)
     ) {
       throw new Error('让先[letFirstPlayer]的值为任一棋手的名称！')
     }
@@ -203,10 +203,8 @@ export default class Chessgame {
    * 判断下一位棋手的将帅棋是否被将军
    */
   checkJiangjun() {
-    return (
-      this.player.allChessTread.indexOf(
-        this.nextPlayer.jiangshuaiChess.position
-      ) > -1
+    return this.player.allChessTread.includes(
+      this.nextPlayer.jiangshuaiChess.position
     )
   }
   /**
