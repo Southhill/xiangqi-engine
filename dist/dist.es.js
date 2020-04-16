@@ -94,7 +94,7 @@ class Player {
    */
   get selfChessPool() {
     return this.chessboard.usableChessPool.filter(
-      chess => chess.color === this.color
+      (chess) => chess.color === this.color
     )
   }
   /**
@@ -102,8 +102,8 @@ class Player {
    */
   get lostJiangshuaiChess() {
     return (
-      this.selfChessPool.findiIndex(
-        chess => chess.type === CHESS_TYPE.JIANG_SHUAI
+      this.selfChessPool.findIndex(
+        (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
       ) === -1
     )
   }
@@ -114,7 +114,7 @@ class Player {
   get allChessTread() {
     const result = [];
 
-    this.selfChessPool.forEach(chess => {
+    this.selfChessPool.forEach((chess) => {
       const treads = chess.getTreads(this.chessboard);
 
       result.push(...treads);
@@ -127,7 +127,7 @@ class Player {
    */
   get jiangshuaiChess() {
     return this.selfChessPool.find(
-      chess => chess.type === CHESS_TYPE.JIANG_SHUAI
+      (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
     )
   }
 
@@ -135,7 +135,7 @@ class Player {
    * 获取己方某个位置的棋子
    */
   getSelfChess(position) {
-    return this.selfChessPool.find(chess => chess.position === position)
+    return this.selfChessPool.find((chess) => chess.position === position)
   }
 
   /**
