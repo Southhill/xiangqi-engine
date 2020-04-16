@@ -30,6 +30,7 @@ export default class Chessboard {
     )
   }
   get chessboardScope() {
+    // 0,0指向左上角，9,8指向右下角
     return [
       [0, 0],
       [9, 8],

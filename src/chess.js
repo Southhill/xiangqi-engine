@@ -371,10 +371,10 @@ class JuChess extends BaseChess {
     const scope = chessboard.chessboardScope
     const result = []
 
-    // 处理上方
+    // 处理下方
     for (let diff = 1; ; diff++) {
       const position = `${x + diff},${y}`
-      if (posInRange(position, scope)) {
+      if (!posInRange([x + diff, y], scope)) {
         break
       }
 
@@ -385,10 +385,10 @@ class JuChess extends BaseChess {
         result.push(position)
       }
     }
-    // 处理下方
+    // 处理上方
     for (let diff = 1; ; diff++) {
       const position = `${x - diff},${y}`
-      if (posInRange(position, scope)) {
+      if (!posInRange([x - diff, y], scope)) {
         break
       }
 
@@ -402,7 +402,7 @@ class JuChess extends BaseChess {
     // 处理右方
     for (let diff = 1; ; diff++) {
       const position = `${x},${y + diff}`
-      if (posInRange(position, scope)) {
+      if (!posInRange([x, y + diff], scope)) {
         break
       }
 
@@ -416,7 +416,7 @@ class JuChess extends BaseChess {
     // 处理左方
     for (let diff = 1; ; diff++) {
       const position = `${x},${y - diff}`
-      if (posInRange(position, scope)) {
+      if (!posInRange([x, y - diff], scope)) {
         break
       }
 
@@ -518,10 +518,10 @@ class PaoChess extends BaseChess {
     const scope = chessboard.chessboardScope
     const result = []
 
-    // 处理上方
+    // 处理下方
     for (let diff = 1; ; diff++) {
       const position = `${x + diff},${y}`
-      if (posInRange(position, scope)) {
+      if (!posInRange([x + diff, y], scope)) {
         break
       }
 
@@ -537,10 +537,10 @@ class PaoChess extends BaseChess {
         result.push(position)
       }
     }
-    // 处理下方
+    // 处理上方
     for (let diff = 1; ; diff++) {
       const position = `${x - diff},${y}`
-      if (posInRange(position, scope)) {
+      if (!posInRange([x - diff, y], scope)) {
         break
       }
 
@@ -559,7 +559,7 @@ class PaoChess extends BaseChess {
     // 处理右方
     for (let diff = 1; ; diff++) {
       const position = `${x},${y + diff}`
-      if (posInRange(position, scope)) {
+      if (!posInRange([x, y + diff], scope)) {
         break
       }
 
@@ -578,7 +578,7 @@ class PaoChess extends BaseChess {
     // 处理左方
     for (let diff = 1; ; diff++) {
       const position = `${x},${y - diff}`
-      if (posInRange(position, scope)) {
+      if (!posInRange([x, y - diff], scope)) {
         break
       }
 
