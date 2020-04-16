@@ -493,7 +493,7 @@ class MaChess extends BaseChess {
     /**
      * 棋子类型
      */
-    this.type === CHESS_TYPE.MA;
+    this.type = CHESS_TYPE.MA;
     /**
      * 棋子名称
      */
@@ -569,7 +569,7 @@ class JuChess extends BaseChess {
     /**
      * 棋子类型
      */
-    this.type === CHESS_TYPE.JU;
+    this.type = CHESS_TYPE.JU;
     /**
      * 棋子名称
      */
