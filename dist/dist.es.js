@@ -1138,7 +1138,7 @@ class Chessgame {
    */
   get canPlay() {
     // 棋局处于对战状态并且当前棋手有棋子可下
-    return this.status === GAME_STATUS.vs
+    return this.status === CHESSGAME_STATUS.vs
   }
   /**
    * 猜和
