@@ -122,7 +122,7 @@ export default class Chessboard {
   getChessForColumn(index) {
     return this.usableChessPool
       .filter((chess) => chess.point[1] === index)
-      .sort((chessA, chessB) => chessB.point[0] > chessA.point[0])
+      .sort((chessA, chessB) => chessA.point[0] - chessB.point[0])
   }
   /**
    * 获取棋盘上某行的棋子
@@ -130,6 +130,6 @@ export default class Chessboard {
   getChessForRow(index) {
     return this.usableChessPool
       .filter((chess) => chess.point[0] === index)
-      .sort((chessA, chessB) => chessB.point[1] > chessA.point[1])
+      .sort((chessA, chessB) => chessA.point[1] - chessB.point[1])
   }
 }
