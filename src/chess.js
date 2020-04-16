@@ -163,7 +163,7 @@ class ShiChess extends BaseChess {
   /**
    * 下一步的走法位置枚举
    */
-  getTreads() {
+  getTreads(chessboard) {
     const [x, y] = this.point
     const tempPositions = [
       `${x + 1},${y + 1}`,
