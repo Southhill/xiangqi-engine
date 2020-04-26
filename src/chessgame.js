@@ -25,6 +25,10 @@ export default class Chessgame {
      */
     this.winner = ''
     /**
+     * 棋局结束的原因
+     */
+    this.reason = ''
+    /**
      * 棋盘
      */
     this.chessboard = null
@@ -40,16 +44,11 @@ export default class Chessgame {
     return this.chessboard.usableChessPool
   }
   /**
-   * 棋盘处于将军状态
+   * 棋盘处于将军状态,
+   * 当前待下棋者为被将军方
    */
   get isJiangjun() {
-    return [
-      this.status === CHESSGAME_STATUS.JIANG_JUN,
-      {
-        jiangjunzhe: this.player.name,
-        bei_jiangjunzhe: this.nextPlayer.name,
-      },
-    ]
+    return this.status === CHESSGAME_STATUS.JIANG_JUN
   }
   /**
    * 当前执棋者可以下棋

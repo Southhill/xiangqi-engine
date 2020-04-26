@@ -32,7 +32,7 @@ export const CHESS_TYPE = {
   /**
    * 卒
    */
-  ZU: 'zu'
+  ZU: 'zu',
 }
 
 export const PLAYER_COLOR = {
@@ -43,7 +43,7 @@ export const PLAYER_COLOR = {
   /**
    * 黑方
    */
-  BLACK: 'black'
+  BLACK: 'black',
 }
 
 export const CHESSGAME_STATUS = {
@@ -62,7 +62,38 @@ export const CHESSGAME_STATUS = {
   /**
    * 和棋
    */
-  HE: 'he'
+  HE: 'he',
+}
+
+export const FINISH_CHESSGAME_REASON = {
+  /**
+   * 将死
+   */
+  jiangsi: '将死',
+  /**
+   * 困毙
+   */
+  kunbi: '困毙',
+  /**
+   * 认输
+   */
+  renshu: '认输',
+  /**
+   * 长打
+   */
+  changda: '长打',
+  /**
+   * 违规
+   */
+  weigui: '违规',
+  /**
+   * 违纪
+   */
+  weiji: '违纪',
+  /**
+   * 超时
+   */
+  chaoshi: '超时',
 }
 
 /**
