@@ -3,6 +3,7 @@
  */
 import Player from './player'
 import Chessboard from './chessboard'
+import PlayRecord from './playrecord'
 
 import { CHESSGAME_STATUS, PLAYER_COLOR } from './map'
 
@@ -35,7 +36,7 @@ export default class Chessgame {
     /**
      * 走法记录表：用于悔棋，撤销
      */
-    this.playRecord = []
+    this.playRecordTable = []
   }
   /**
    * 当前在棋盘内的的棋子
@@ -58,6 +59,16 @@ export default class Chessgame {
     return [CHESSGAME_STATUS.VS, CHESSGAME_STATUS.JIANG_JUN].includes(
       this.status
     )
+  }
+  get readPlayRecordTable() {
+    return this.playRecordTable.map((record) => {
+      const [playOrder, chess, track, discardedChess] = record.split(':')
+      const [color] = chess.split('-')
+      const [from, to] = track.split('=>')
+      const pr = new PlayRecord(from, to, color, this.chessboard)
+
+      return pr.getPlayRecord()
+    })
   }
   /**
    * 猜和
@@ -151,13 +162,13 @@ export default class Chessgame {
    */
   playChess(from, to) {
     if (this.canPlay) {
-      const playOrder = this.playRecord.length + 1
+      const playOrder = this.playRecordTable.length + 1
       const playInfo = this.player.playChess(from, to, playOrder)
 
       if (playInfo === null) {
         return
       } else {
-        this.playRecord.push(playInfo)
+        this.playRecordTable.push(playInfo)
       }
 
       // 设置棋盘状态, 返回false说明棋局已决出胜负
@@ -171,7 +182,8 @@ export default class Chessgame {
    * 悔棋
    */
   regretChess() {
-    const record = this.playRecord.pop()
+    // 丢弃棋招记录
+    const record = this.playRecordTable.pop()
     const [playOrder, chess, track, discardedChess] = record.split(':')
     const [from, to] = track.split('=>')
 

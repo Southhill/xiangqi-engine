@@ -96,6 +96,18 @@ export const FINISH_CHESSGAME_REASON = {
   chaoshi: '超时',
 }
 
+export const RED_PLAY_STEP = {
+  1: '一',
+  2: '二',
+  3: '三',
+  4: '四',
+  5: '五',
+  6: '六',
+  7: '七',
+  8: '八',
+  9: '九',
+}
+
 /**
  * 表示该棋子在棋盘外，也即处于废弃状态
  */
