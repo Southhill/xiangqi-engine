@@ -106,34 +106,4 @@ export default class Player {
 
     return record
   }
-  /**
-   * 获取棋招第三个字：进，退，平
-   * @param {Postion} from
-   * @param {Position} to
-   */
-  getPlayDirection(from, to) {
-    const [startX, endX] = from.split(',').map(Number)
-    const [startY, endY] = to.split(',').map(Number)
-
-    if (startX === startY) {
-      return '平'
-    } else {
-      if (
-        (this.color === PLAYER_COLOR.RED && endX < endY) ||
-        (this.color === PLAYER_COLOR.BLACK && endX > endY)
-      ) {
-        return '进'
-      } else {
-        return '退'
-      }
-    }
-  }
-  getEndPlayNumber(from, to) {
-    const [startX, endX] = from.split(',').map(Number)
-    const [startY, endY] = to.split(',').map(Number)
-    const direction = this.getPlayDirection(from, to)
-
-    if (direction === '平') {
-    }
-  }
 }

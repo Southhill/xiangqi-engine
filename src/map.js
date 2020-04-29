@@ -63,37 +63,41 @@ export const CHESSGAME_STATUS = {
    * 和棋
    */
   HE: 'he',
+  /**
+   * 该局无效
+   */
+  INVALID: 'invalid',
 }
 
-export const FINISH_CHESSGAME_REASON = {
+export const END_CHESSGAME_REASON = {
   /**
    * 将死
    */
-  jiangsi: '将死',
+  JIANG_SI: '将死',
   /**
    * 困毙
    */
-  kunbi: '困毙',
+  KUN_BI: '困毙',
   /**
    * 认输
    */
-  renshu: '认输',
+  REN_SHU: '认输',
   /**
    * 长打
    */
-  changda: '长打',
+  CHANG_DA: '长打',
   /**
    * 违规
    */
-  weigui: '违规',
+  WEI_GUI: '违规',
   /**
    * 违纪
    */
-  weiji: '违纪',
+  WEI_JI: '违纪',
   /**
    * 超时
    */
-  chaoshi: '超时',
+  CHAO_SHI: '超时',
 }
 
 export const RED_PLAY_STEP = {

@@ -5,7 +5,7 @@ import Player from './player'
 import Chessboard from './chessboard'
 import PlayRecord from './playrecord'
 
-import { CHESSGAME_STATUS, PLAYER_COLOR } from './map'
+import { CHESSGAME_STATUS, PLAYER_COLOR, END_CHESSGAME_REASON } from './map'
 
 export default class Chessgame {
   constructor() {
@@ -18,14 +18,6 @@ export default class Chessgame {
      */
     this.nextPlayer = null
     /**
-     * 棋局状态
-     */
-    this.status = CHESSGAME_STATUS.VS
-    /**
-     * 胜者
-     */
-    this.winner = ''
-    /**
      * 棋局结束的原因
      */
     this.reason = ''
@@ -37,6 +29,24 @@ export default class Chessgame {
      * 走法记录表：用于悔棋，撤销
      */
     this.playRecordTable = []
+    /**
+     * 棋局状态
+     */
+    this._status = CHESSGAME_STATUS.VS
+    /**
+     * 胜者
+     */
+    this.winner = ''
+  }
+  get status() {
+    return this._status
+  }
+  set status(value) {
+    this._status = value
+
+    if (status === CHESSGAME_STATUS.WIN) {
+      this.winner = this.player.name
+    }
   }
   /**
    * 当前在棋盘内的的棋子
@@ -172,11 +182,20 @@ export default class Chessgame {
       }
 
       // 设置棋盘状态, 返回false说明棋局已决出胜负
-      if (this.checkChessGameStatus()) {
+      if (this.checkGameStatus()) {
         // 棋手轮转
         this.turnToNext()
       }
     }
+  }
+  /**
+   * 棋局控制权轮转到下一位
+   */
+  turnToNext() {
+    const temp = this.player
+
+    this.player = this.nextPlayer
+    this.nextPlayer = temp
   }
   /**
    * 悔棋
@@ -200,16 +219,24 @@ export default class Chessgame {
 
     this.turnToNext()
   }
-
   /**
-   * 棋局控制权轮转到下一位
+   * 默认为当前棋手主动认输
    */
-  turnToNext() {
-    const temp = this.player
+  confess(color = this.player.color) {
+    this._status = CHESSGAME_STATUS.WIN
+    this.reason = END_CHESSGAME_REASON.REN_SHU
 
-    this.player = this.nextPlayer
-    this.nextPlayer = temp
+    if (color === this.player.color) {
+      this.winner = this.nextPlayer.name
+    } else {
+      this.winner = this.player.name
+    }
   }
+  /**
+   * 主持人结束棋局
+   */
+  finishGameByHost() {}
+
   /**
    * 判断下一位棋手的将帅棋是否被将军
    */
@@ -225,12 +252,8 @@ export default class Chessgame {
    *
    * 返回`true`表明棋局还在对战中
    */
-  checkChessGameStatus() {
-    // 对方棋手的将帅棋子已经被吃
-    if (this.nextPlayer.lostJiangshuaiChess) {
-      this.status = CHESSGAME_STATUS.WIN
-      this.winner = this.player.name
-
+  checkGameStatus() {
+    if (this.checkEndGame()) {
       return false
     }
     // 判断棋子是否会[将军]到对方的**将帅**
@@ -239,5 +262,28 @@ export default class Chessgame {
     }
 
     return true
+  }
+  /**
+   * 判断是否能够结束游戏，有如下情况：
+   *
+   * 将死，困毙，认输，长打，（违规，违纪，超时）
+   */
+  checkEndGame() {
+    // 将死，对方棋手的将帅棋子已经被吃
+    if (this.nextPlayer.lostJiangshuaiChess) {
+      this.status = CHESSGAME_STATUS.WIN
+      this.reason = END_CHESSGAME_REASON.JIANG_SI
+
+      return true
+    }
+    // 困毙
+    if (!this.nextPlayer.allChessTread.length) {
+      this.status = CHESSGAME_STATUS.WIN
+      this.reason = END_CHESSGAME_REASON.KUN_BI
+
+      return true
+    }
+
+    return false
   }
 }
