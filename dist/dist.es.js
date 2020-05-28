@@ -32,7 +32,7 @@ const CHESS_TYPE = {
   /**
    * 卒
    */
-  ZU: 'zu'
+  ZU: 'zu',
 };
 
 const PLAYER_COLOR = {
@@ -43,7 +43,7 @@ const PLAYER_COLOR = {
   /**
    * 黑方
    */
-  BLACK: 'black'
+  BLACK: 'black',
 };
 
 const CHESSGAME_STATUS = {
@@ -62,7 +62,54 @@ const CHESSGAME_STATUS = {
   /**
    * 和棋
    */
-  HE: 'he'
+  HE: 'he',
+  /**
+   * 该局无效
+   */
+  INVALID: 'invalid',
+};
+
+const END_CHESSGAME_REASON = {
+  /**
+   * 将死
+   */
+  JIANG_SI: '将死',
+  /**
+   * 困毙
+   */
+  KUN_BI: '困毙',
+  /**
+   * 认输
+   */
+  REN_SHU: '认输',
+  /**
+   * 长打
+   */
+  CHANG_DA: '长打',
+  /**
+   * 违规
+   */
+  WEI_GUI: '违规',
+  /**
+   * 违纪
+   */
+  WEI_JI: '违纪',
+  /**
+   * 超时
+   */
+  CHAO_SHI: '超时',
+};
+
+const RED_PLAY_STEP = {
+  1: '一',
+  2: '二',
+  3: '三',
+  4: '四',
+  5: '五',
+  6: '六',
+  7: '七',
+  8: '八',
+  9: '九',
 };
 
 /**
@@ -1088,6 +1135,104 @@ class Chessboard {
   }
 }
 
+class PlayRecord {
+  constructor(from, to, color, chessboard) {
+    this.from = from;
+    this.to = to;
+    this.color = color;
+    this.chessboard = chessboard;
+    this.chess = chessboard.getChess(from);
+
+    const [x1, y1] = from.split(',').map(Number);
+    const [x2, y2] = to.split(',').map(Number);
+
+    this.startX = x1;
+    this.startY = y1;
+    this.endX = x2;
+    this.endY = y2;
+  }
+  /**
+   * 棋子斜走：馬，相，士
+   */
+  get isOblique() {
+    return this.startX !== endX && this.startY !== endY
+  }
+
+  get playDirection() {
+    if (this.startX === this.startY) {
+      return '平'
+    } else {
+      if (
+        (this.color === PLAYER_COLOR.RED && this.endX < this.endY) ||
+        (this.color === PLAYER_COLOR.BLACK && this.endX > this.endY)
+      ) {
+        return '进'
+      } else {
+        return '退'
+      }
+    }
+  }
+  get playStep() {
+    if (this.playDirection === '平' || this.isOblique) {
+      return this.getReadStep(this.endY)
+    } else {
+      const diffStep = Math.abs(endY - startY);
+
+      return this.color === PLAYER_COLOR.RED
+        ? RED_PLAY_STEP[diffStep]
+        : diffStep
+    }
+  }
+
+  getReadStep(y) {
+    if (this.color === PLAYER_COLOR.RED) {
+      return RED_PLAY_STEP[9 - y]
+    } else {
+      return RED_PLAY_STEP[y + 1]
+    }
+  }
+
+  /**
+   * 获取当前棋盘中棋子所在列的所有同类型的棋子
+   */
+  getSameChesses() {
+    return this.chessboard
+      .getChessForColumn(this.startY)
+      .filter(
+        (chess) => chess.type === this.chess.type && chess.color === this.color
+      )
+  }
+
+  getPlayRecord() {
+    const result = Array(4);
+
+    result[2] = this.playDirection;
+    result[3] = this.playStep;
+
+    const sameChesses = this.getSameChesses();
+
+    if (sameChesses.length === 2) {
+      const bigPositionChess =
+        sameChesses[0].point[1] > sameChesses[1].point[1]
+          ? sameChesses[0]
+          : sameChesses[1];
+
+      if (this.startY === bigPositionChess.point[1]) {
+        result[0] =  '前' ;
+      } else {
+        result[0] =  '后' ;
+      }
+
+      result[1] = this.chess.name;
+    } else {
+      result[0] = this.chess.name;
+      result[1] = this.getReadStep(this.startY);
+    }
+
+    return result.join('')
+  }
+}
+
 /**
  * 棋局
  */
@@ -1103,13 +1248,9 @@ class Chessgame {
      */
     this.nextPlayer = null;
     /**
-     * 棋局状态
+     * 棋局结束的原因
      */
-    this.status = CHESSGAME_STATUS.VS;
-    /**
-     * 胜者
-     */
-    this.winner = '';
+    this.reason = '';
     /**
      * 棋盘
      */
@@ -1117,7 +1258,25 @@ class Chessgame {
     /**
      * 走法记录表：用于悔棋，撤销
      */
-    this.playRecord = [];
+    this.playRecordTable = [];
+    /**
+     * 棋局状态
+     */
+    this._status = CHESSGAME_STATUS.VS;
+    /**
+     * 胜者
+     */
+    this.winner = '';
+  }
+  get status() {
+    return this._status
+  }
+  set status(value) {
+    this._status = value;
+
+    if (status === CHESSGAME_STATUS.WIN) {
+      this.winner = this.player.name;
+    }
   }
   /**
    * 当前在棋盘内的的棋子
@@ -1126,16 +1285,11 @@ class Chessgame {
     return this.chessboard.usableChessPool
   }
   /**
-   * 棋盘处于将军状态
+   * 棋盘处于将军状态,
+   * 当前待下棋者为被将军方
    */
   get isJiangjun() {
-    return [
-      this.status === CHESSGAME_STATUS.JIANG_JUN,
-      {
-        jiangjunzhe: this.player.name,
-        bei_jiangjunzhe: this.nextPlayer.name,
-      },
-    ]
+    return this.status === CHESSGAME_STATUS.JIANG_JUN
   }
   /**
    * 当前执棋者可以下棋
@@ -1145,6 +1299,16 @@ class Chessgame {
     return [CHESSGAME_STATUS.VS, CHESSGAME_STATUS.JIANG_JUN].includes(
       this.status
     )
+  }
+  get readPlayRecordTable() {
+    return this.playRecordTable.map((record) => {
+      const [playOrder, chess, track, discardedChess] = record.split(':');
+      const [color] = chess.split('-');
+      const [from, to] = track.split('=>');
+      const pr = new PlayRecord(from, to, color, this.chessboard);
+
+      return pr.getPlayRecord()
+    })
   }
   /**
    * 猜和
@@ -1238,27 +1402,37 @@ class Chessgame {
    */
   playChess(from, to) {
     if (this.canPlay) {
-      const playOrder = this.playRecord.length + 1;
+      const playOrder = this.playRecordTable.length + 1;
       const playInfo = this.player.playChess(from, to, playOrder);
 
       if (playInfo === null) {
         return
       } else {
-        this.playRecord.push(playInfo);
+        this.playRecordTable.push(playInfo);
       }
 
       // 设置棋盘状态, 返回false说明棋局已决出胜负
-      if (this.checkChessGameStatus()) {
+      if (this.checkGameStatus()) {
         // 棋手轮转
         this.turnToNext();
       }
     }
   }
   /**
+   * 棋局控制权轮转到下一位
+   */
+  turnToNext() {
+    const temp = this.player;
+
+    this.player = this.nextPlayer;
+    this.nextPlayer = temp;
+  }
+  /**
    * 悔棋
    */
   regretChess() {
-    const record = this.playRecord.pop();
+    // 丢弃棋招记录
+    const record = this.playRecordTable.pop();
     const [playOrder, chess, track, discardedChess] = record.split(':');
     const [from, to] = track.split('=>');
 
@@ -1275,16 +1449,24 @@ class Chessgame {
 
     this.turnToNext();
   }
-
   /**
-   * 棋局控制权轮转到下一位
+   * 默认为当前棋手主动认输
    */
-  turnToNext() {
-    const temp = this.player;
+  confess(color = this.player.color) {
+    this._status = CHESSGAME_STATUS.WIN;
+    this.reason = END_CHESSGAME_REASON.REN_SHU;
 
-    this.player = this.nextPlayer;
-    this.nextPlayer = temp;
+    if (color === this.player.color) {
+      this.winner = this.nextPlayer.name;
+    } else {
+      this.winner = this.player.name;
+    }
   }
+  /**
+   * 主持人结束棋局
+   */
+  finishGameByHost() {}
+
   /**
    * 判断下一位棋手的将帅棋是否被将军
    */
@@ -1300,12 +1482,8 @@ class Chessgame {
    *
    * 返回`true`表明棋局还在对战中
    */
-  checkChessGameStatus() {
-    // 对方棋手的将帅棋子已经被吃
-    if (this.nextPlayer.lostJiangshuaiChess) {
-      this.status = CHESSGAME_STATUS.WIN;
-      this.winner = this.player.name;
-
+  checkGameStatus() {
+    if (this.checkEndGame()) {
       return false
     }
     // 判断棋子是否会[将军]到对方的**将帅**
@@ -1314,6 +1492,29 @@ class Chessgame {
     }
 
     return true
+  }
+  /**
+   * 判断是否能够结束游戏，有如下情况：
+   *
+   * 将死，困毙，认输，长打，（违规，违纪，超时）
+   */
+  checkEndGame() {
+    // 将死，对方棋手的将帅棋子已经被吃
+    if (this.nextPlayer.lostJiangshuaiChess) {
+      this.status = CHESSGAME_STATUS.WIN;
+      this.reason = END_CHESSGAME_REASON.JIANG_SI;
+
+      return true
+    }
+    // 困毙
+    if (!this.nextPlayer.allChessTread.length) {
+      this.status = CHESSGAME_STATUS.WIN;
+      this.reason = END_CHESSGAME_REASON.KUN_BI;
+
+      return true
+    }
+
+    return false
   }
 }
 

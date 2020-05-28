@@ -4,7 +4,7 @@
   "description": "chinese xiangqi game engine",
   "main": "./dist/dist.es.js",
   "scripts": {
-    "build": "rollup main.js -f umd -o ./dist/dist.umd.js",
+    "build": "rollup main.js -f es -o ./dist/dist.es.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Cao",
@@ -23,5 +23,8 @@
   "homepage": "https://github.com/southhill/xiangqi#readme",
   "devDependencies": {
     "rollup": "^2.4.0"
+  },
+  "engines": {
+    "node": ">=13.11.0"
   }
 }
