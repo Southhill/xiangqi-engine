@@ -51,9 +51,9 @@ export default class PlayRecord {
 
   getReadStep(y) {
     if (this.color === PLAYER_COLOR.RED) {
-      return RED_PLAY_STEP[String(9 - y)]
+      return RED_PLAY_STEP[9 - y]
     } else {
-      return y + 1
+      return RED_PLAY_STEP[y + 1]
     }
   }
 

@@ -4,7 +4,7 @@
   "description": "chinese xiangqi game engine",
   "main": "./dist/dist.es.js",
   "scripts": {
-    "build": "rollup main.js -f es -o ./dist/dist.es.js",
+    "build": "rollup main.js -f umd -o ./dist/dist.umd.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Cao",

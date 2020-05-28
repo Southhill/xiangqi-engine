@@ -1,7 +1,7 @@
 /**
  * 棋手
  */
-import { CHESS_TYPE, PLAYER_COLOR } from './map'
+import { CHESS_TYPE } from './map'
 
 export default class Player {
   constructor(name) {

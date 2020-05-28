@@ -2,8 +2,8 @@
  * 棋盘
  */
 
-import { PLAYER_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
 import createChess, { createStandardChessMap } from './chess'
+import { PLAYER_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
 
 export default class Chessboard {
   constructor() {
