@@ -4,6 +4,7 @@
 import Player from './player'
 import Chessboard from './chessboard'
 import PlayRecord from './playrecord'
+import { generateI18n } from './utils'
 
 import { CHESSGAME_STATUS, PLAYER_COLOR, END_CHESSGAME_REASON } from './map'
 
@@ -102,6 +103,7 @@ export default class Chessgame {
       isBlackFirst = false,
       beforeSetup,
       afterSetup,
+      i18nMap,
     } = opts
 
     if (typeof beforeSetup === 'function') {
@@ -164,6 +166,8 @@ export default class Chessgame {
     if (typeof afterSetup === 'function') {
       afterSetup.call(this, this)
     }
+
+    Chessgame.i18ner = generateI18n(i18nMap)
   }
   /**
    * 棋局执行下棋动作

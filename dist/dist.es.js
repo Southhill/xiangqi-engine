@@ -262,28 +262,34 @@ function horseLegPoint(pointStart, pointEnd) {
   }
 }
 
-function i18ner(str, opts = {}) {
-  const i18nMap = Chessgame.i18n;
+function generateI18n(i18nMap) {
+  return function i18ner(str, opts = {}) {
+    if (!isObject(i18nMap)) {
+      return str
+    }
 
-  if (Object.prototype.toString.call(i18nMap).slice(8, -1) !== 'Object') {
-    return str
+    const { isStepI18n = false } = opts;
+
+    if (isStepI18n) {
+      return str
+        .split('')
+        .map((s) => i18nMap[s] || s)
+        .join('')
+    }
+
+    return i18nMap[str] || str
   }
+}
 
-  const { isStepI18n = false } = opts;
-
-  if (isStepI18n) {
-    return str
-      .split('')
-      .map((s) => i18nMap[s] || s)
-      .join('')
-  }
-
-  return i18nMap[str] || str
+function isObject(obj) {
+  return Object.prototype.toString.call(obj).slice(8, -1) === 'Object'
 }
 
 /**
  * 棋子
  */
+
+const i18ner = Chessgame.i18ner;
 
 class BaseChess {
   constructor(position, color) {
@@ -1332,6 +1338,7 @@ class Chessgame {
       isBlackFirst = false,
       beforeSetup,
       afterSetup,
+      i18nMap,
     } = opts;
 
     if (typeof beforeSetup === 'function') {
@@ -1394,6 +1401,8 @@ class Chessgame {
     if (typeof afterSetup === 'function') {
       afterSetup.call(this, this);
     }
+
+    Chessgame.i18ner = generateI18n(i18nMap);
   }
   /**
    * 棋局执行下棋动作

@@ -1,4 +1,3 @@
-import Chessgame from './chessgame'
 /**
  * 判断给定位置是否在限定的矩形框内
  */
@@ -35,23 +34,23 @@ export function horseLegPoint(pointStart, pointEnd) {
   }
 }
 
-export function i18ner(str, opts = {}) {
-  const i18nMap = Chessgame.i18n
+export function generateI18n(i18nMap) {
+  return function i18ner(str, opts = {}) {
+    if (!isObject(i18nMap)) {
+      return str
+    }
 
-  if (!isObject(i18nMap)) {
-    return str
+    const { isStepI18n = false } = opts
+
+    if (isStepI18n) {
+      return str
+        .split('')
+        .map((s) => i18nMap[s] || s)
+        .join('')
+    }
+
+    return i18nMap[str] || str
   }
-
-  const { isStepI18n = false } = opts
-
-  if (isStepI18n) {
-    return str
-      .split('')
-      .map((s) => i18nMap[s] || s)
-      .join('')
-  }
-
-  return i18nMap[str] || str
 }
 
 export function isObject(obj) {

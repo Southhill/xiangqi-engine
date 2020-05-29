@@ -1,8 +1,11 @@
 /**
  * 棋子
  */
-import { posInRange, halfPoint, horseLegPoint, i18ner } from './utils'
+import { posInRange, halfPoint, horseLegPoint } from './utils'
+import Chessgame from './chessgame'
 import { CHESS_TYPE, PLAYER_COLOR } from './map'
+
+const i18ner = Chessgame.i18ner
 
 class BaseChess {
   constructor(position, color) {
