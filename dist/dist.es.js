@@ -350,10 +350,6 @@ class JIANG_SHUAI_Chess extends BaseChess {
     this.name = color === PLAYER_COLOR.RED ? i18ner('帥') : i18ner('将');
   }
   /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
-  /**
    * 该类型棋子行走范围：将帅棋只能走九宫格
    */
   get walkScope() {
@@ -426,10 +422,7 @@ class ShiChess extends BaseChess {
      */
     this.name = color === PLAYER_COLOR.RED ? i18ner('仕') : i18ner('士');
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
+
   /**
    * 该类型棋子行走范围：士棋走米字
    */
@@ -484,10 +477,6 @@ class XIANGChess extends BaseChess {
      */
     this.name = color === PLAYER_COLOR.RED ? i18ner('相') : i18ner('象');
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：己方棋盘
    */
@@ -552,10 +541,6 @@ class MaChess extends BaseChess {
      */
     this.name = i18ner('馬');
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：整张棋盘
    */
@@ -628,10 +613,6 @@ class JuChess extends BaseChess {
      */
     this.name = i18ner('車');
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：整张棋盘
    */
@@ -733,10 +714,6 @@ class PaoChess extends BaseChess {
      */
     this.name = i18ner('炮');
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：整张棋盘
    */
@@ -904,10 +881,6 @@ class ZuChess extends BaseChess {
      */
     this.name = color === PLAYER_COLOR.RED ? i18ner('兵') : i18ner('卒');
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：整张棋盘
    */
@@ -1161,7 +1134,7 @@ class PlayRecord {
    * 棋子斜走：馬，相，士
    */
   get isOblique() {
-    return this.startX !== endX && this.startY !== endY
+    return this.startX !== this.endX && this.startY !== this.endY
   }
 
   get playDirection() {
@@ -1182,7 +1155,7 @@ class PlayRecord {
     if (this.playDirection === '平' || this.isOblique) {
       return this.getReadStep(this.endY)
     } else {
-      const diffStep = Math.abs(endY - startY);
+      const diffStep = Math.abs(this.endY - this.startY);
 
       return this.color === PLAYER_COLOR.RED
         ? RED_PLAY_STEP[diffStep]
@@ -1280,7 +1253,7 @@ class Chessgame {
   set status(value) {
     this._status = value;
 
-    if (status === CHESSGAME_STATUS.WIN) {
+    if (this.status === CHESSGAME_STATUS.WIN) {
       this.winner = this.player.name;
     }
   }
@@ -1308,6 +1281,7 @@ class Chessgame {
   }
   get readPlayRecordTable() {
     return this.playRecordTable.map((record) => {
+      // eslint-disable-next-line no-unused-vars
       const [playOrder, chess, track, discardedChess] = record.split(':');
       const [color] = chess.split('-');
       const [from, to] = track.split('=>');
@@ -1442,6 +1416,7 @@ class Chessgame {
   regretChess() {
     // 丢弃棋招记录
     const record = this.playRecordTable.pop();
+    // eslint-disable-next-line no-unused-vars
     const [playOrder, chess, track, discardedChess] = record.split(':');
     const [from, to] = track.split('=>');
 

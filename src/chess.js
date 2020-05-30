@@ -66,10 +66,6 @@ class JIANG_SHUAI_Chess extends BaseChess {
     this.name = color === PLAYER_COLOR.RED ? i18ner('帥') : i18ner('将')
   }
   /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
-  /**
    * 该类型棋子行走范围：将帅棋只能走九宫格
    */
   get walkScope() {
@@ -142,10 +138,7 @@ class ShiChess extends BaseChess {
      */
     this.name = color === PLAYER_COLOR.RED ? i18ner('仕') : i18ner('士')
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
+
   /**
    * 该类型棋子行走范围：士棋走米字
    */
@@ -200,10 +193,6 @@ class XIANGChess extends BaseChess {
      */
     this.name = color === PLAYER_COLOR.RED ? i18ner('相') : i18ner('象')
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：己方棋盘
    */
@@ -268,10 +257,6 @@ class MaChess extends BaseChess {
      */
     this.name = i18ner('馬')
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：整张棋盘
    */
@@ -344,10 +329,6 @@ class JuChess extends BaseChess {
      */
     this.name = i18ner('車')
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：整张棋盘
    */
@@ -449,10 +430,6 @@ class PaoChess extends BaseChess {
      */
     this.name = i18ner('炮')
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：整张棋盘
    */
@@ -620,10 +597,6 @@ class ZuChess extends BaseChess {
      */
     this.name = color === PLAYER_COLOR.RED ? i18ner('兵') : i18ner('卒')
   }
-  /**
-   * 棋子位置的别名
-   */
-  get aliasPosition() {}
   /**
    * 该类型棋子行走范围：整张棋盘
    */

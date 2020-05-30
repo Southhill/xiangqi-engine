@@ -45,7 +45,7 @@ export default class Chessgame {
   set status(value) {
     this._status = value
 
-    if (status === CHESSGAME_STATUS.WIN) {
+    if (this.status === CHESSGAME_STATUS.WIN) {
       this.winner = this.player.name
     }
   }
@@ -73,6 +73,7 @@ export default class Chessgame {
   }
   get readPlayRecordTable() {
     return this.playRecordTable.map((record) => {
+      // eslint-disable-next-line no-unused-vars
       const [playOrder, chess, track, discardedChess] = record.split(':')
       const [color] = chess.split('-')
       const [from, to] = track.split('=>')
@@ -207,6 +208,7 @@ export default class Chessgame {
   regretChess() {
     // 丢弃棋招记录
     const record = this.playRecordTable.pop()
+    // eslint-disable-next-line no-unused-vars
     const [playOrder, chess, track, discardedChess] = record.split(':')
     const [from, to] = track.split('=>')
 

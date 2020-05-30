@@ -20,7 +20,7 @@ export default class PlayRecord {
    * 棋子斜走：馬，相，士
    */
   get isOblique() {
-    return this.startX !== endX && this.startY !== endY
+    return this.startX !== this.endX && this.startY !== this.endY
   }
 
   get playDirection() {
@@ -41,7 +41,7 @@ export default class PlayRecord {
     if (this.playDirection === '平' || this.isOblique) {
       return this.getReadStep(this.endY)
     } else {
-      const diffStep = Math.abs(endY - startY)
+      const diffStep = Math.abs(this.endY - this.startY)
 
       return this.color === PLAYER_COLOR.RED
         ? RED_PLAY_STEP[diffStep]
