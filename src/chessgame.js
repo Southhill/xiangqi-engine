@@ -4,7 +4,6 @@
 import Player from './player'
 import Chessboard from './chessboard'
 import PlayRecord from './playrecord'
-import { generateI18n } from './utils'
 
 import { CHESSGAME_STATUS, PLAYER_COLOR, END_CHESSGAME_REASON } from './map'
 
@@ -27,11 +26,11 @@ export default class Chessgame {
      */
     this.chessboard = null
     /**
-     * 走法记录表：用于悔棋，撤销
+     * 走法记录表：用于悔棋(撤销)
      */
     this.playRecordTable = []
     /**
-     * 棋局状态
+     * 棋局的对局状态
      */
     this._status = CHESSGAME_STATUS.VS
     /**
@@ -83,7 +82,7 @@ export default class Chessgame {
     })
   }
   /**
-   * 猜和
+   * 猜先
    *
    * 返回`true`，表示第一位棋手为红方
    *
@@ -93,10 +92,15 @@ export default class Chessgame {
     return Math.random() > 0.5
   }
 
-  setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang', opts = {}) {
+  setup(
+    firstPlayerName = Chessgame.default.firstPlayerName,
+    secondPlayerName = Chessgame.default.secondPlayerName,
+    opts = {}
+  ) {
     /**
      * chessMap：初始化的棋谱
-     * letFirstPlayer：让先，该棋手先行
+     * letFirstPlayer：让先，逻辑为：该棋手的归属方设置为红方，如果没有让先的值，则使用猜先逻辑
+     * isBlackFirst: 黑棋先行
      */
     const {
       chessMap,
@@ -104,7 +108,6 @@ export default class Chessgame {
       isBlackFirst = false,
       beforeSetup,
       afterSetup,
-      i18nMap,
     } = opts
 
     if (typeof beforeSetup === 'function') {
@@ -167,8 +170,6 @@ export default class Chessgame {
     if (typeof afterSetup === 'function') {
       afterSetup.call(this, this)
     }
-
-    Chessgame.i18ner = generateI18n(i18nMap)
   }
   /**
    * 棋局执行下棋动作
