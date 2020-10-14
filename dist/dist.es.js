@@ -6,7 +6,7 @@ const CHESS_TYPE = {
   /**
    * 将（帅）
    */
-  JIANG_SHUAI: 'jiang_shuai',
+  JIANG: 'jiang',
   /**
    * 士
    */
@@ -147,10 +147,10 @@ class Player {
   /**
    * 丢失了将帅旗，也即对战失败了
    */
-  get lostJiangshuaiChess() {
+  get lostJiangChess() {
     return (
       this.selfChessPool.findIndex(
-        (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
+        (chess) => chess.type === CHESS_TYPE.JIANG
       ) === -1
     )
   }
@@ -172,10 +172,8 @@ class Player {
   /**
    * 获取棋手的将帅棋
    */
-  get jiangshuaiChess() {
-    return this.selfChessPool.find(
-      (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
-    )
+  get jiangChess() {
+    return this.selfChessPool.find((chess) => chess.type === CHESS_TYPE.JIANG)
   }
 
   /**
@@ -337,13 +335,13 @@ class BaseChess {
 /**
  * 【将|帅】棋
  */
-class JIANG_SHUAI_Chess extends BaseChess {
+class JiangChess extends BaseChess {
   constructor(position, color) {
     super(position, color);
     /**
      * 棋子类型
      */
-    this.type = CHESS_TYPE.JIANG_SHUAI;
+    this.type = CHESS_TYPE.JIANG;
     /**
      * 棋子名称
      */
@@ -365,8 +363,8 @@ class JIANG_SHUAI_Chess extends BaseChess {
    */
   static create() {
     return [
-      new JIANG_SHUAI_Chess('0,4', PLAYER_COLOR.RED),
-      new JIANG_SHUAI_Chess('9,4', PLAYER_COLOR.BLACK),
+      new JiangChess('0,4', PLAYER_COLOR.RED),
+      new JiangChess('9,4', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -383,11 +381,11 @@ class JIANG_SHUAI_Chess extends BaseChess {
       .filter((pos) => this.walkScope.includes(pos))
       .filter((po) => this.filterSelfChesses(chessboard, po));
 
-    const otherJiangshuaiChess = this.zhiquzhongjun(chessboard);
+    const otherJiangChess = this.zhiquzhongjun(chessboard);
 
     // 当可以直取中军时，将中军（对方的将帅棋）的位置加入到走法中
-    if (otherJiangshuaiChess) {
-      positions.push(otherJiangshuaiChess.position);
+    if (otherJiangChess) {
+      positions.push(otherJiangChess.position);
     }
 
     return positions
@@ -396,14 +394,14 @@ class JIANG_SHUAI_Chess extends BaseChess {
    * 可以直取中军(将吃帅操作)
    */
   zhiquzhongjun(chessboard) {
-    const selfJiangshuaiChess = chessboard.jiangshuaiChesses.find(
+    const selfJiangChess = chessboard.jiangChesses.find(
       (chess) => chess.color === this.color
     );
-    const chesses = chessboard.getChessForColumn(selfJiangshuaiChess.point[1]);
+    const chesses = chessboard.getChessForColumn(selfJiangChess.point[1]);
 
     return (
       chesses.length === 2 &&
-      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG_SHUAI)
+      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG)
     )
   }
 }
@@ -465,7 +463,7 @@ class ShiChess extends BaseChess {
 /**
  * 【相】棋
  */
-class XIANGChess extends BaseChess {
+class XiangChess extends BaseChess {
   constructor(position, color) {
     super(position, color);
     /**
@@ -489,10 +487,10 @@ class XIANGChess extends BaseChess {
    */
   static create() {
     return [
-      new XIANGChess('0,2', PLAYER_COLOR.RED),
-      new XIANGChess('0,6', PLAYER_COLOR.RED),
-      new XIANGChess('9,6', PLAYER_COLOR.BLACK),
-      new XIANGChess('9,2', PLAYER_COLOR.BLACK),
+      new XiangChess('0,2', PLAYER_COLOR.RED),
+      new XiangChess('0,6', PLAYER_COLOR.RED),
+      new XiangChess('9,6', PLAYER_COLOR.BLACK),
+      new XiangChess('9,2', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -933,11 +931,14 @@ class ZuChess extends BaseChess {
     return result.filter((po) => this.filterSelfChesses(chessboard, po))
   }
 }
+/**
+ * 创建一个标准的棋盘
+ */
 function createStandardChessMap() {
   return [
-    ...JIANG_SHUAI_Chess.create(),
+    ...JiangChess.create(),
     ...ShiChess.create(),
-    ...XIANGChess.create(),
+    ...XiangChess.create(),
     ...MaChess.create(),
     ...JuChess.create(),
     ...PaoChess.create(),
@@ -953,14 +954,14 @@ function createChess(info = {}) {
   let chess = null;
 
   switch (type) {
-    case CHESS_TYPE.JIANG_SHUAI:
-      chess = new JIANG_SHUAI_Chess(position, color);
+    case CHESS_TYPE.JIANG:
+      chess = new JiangChess(position, color);
       break
     case CHESS_TYPE.SHI:
       chess = new ShiChess(position, color);
       break
     case CHESS_TYPE.XIANG:
-      chess = new XIANGChess(position, color);
+      chess = new XiangChess(position, color);
       break
     case CHESS_TYPE.MA:
       chess = new MaChess(position, color);
@@ -1004,9 +1005,9 @@ class Chessboard {
   get usableChessPool() {
     return this.chessPool.filter((chess) => chess.position !== DISCARDED_CHESS)
   }
-  get jiangshuaiChesses() {
+  get jiangChesses() {
     return this.usableChessPool.filter(
-      (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
+      (chess) => chess.type === CHESS_TYPE.JIANG
     )
   }
   get chessboardScope() {
@@ -1235,17 +1236,22 @@ class Chessgame {
      */
     this.chessboard = null;
     /**
-     * 走法记录表：用于悔棋，撤销
+     * 走法记录表：用于悔棋(撤销)
      */
     this.playRecordTable = [];
     /**
-     * 棋局状态
+     * 棋局的对局状态
      */
     this._status = CHESSGAME_STATUS.VS;
     /**
      * 胜者
      */
     this.winner = '';
+
+    /**
+     * 应用的状态，有如下值：chaos(混沌), setuping(设置中), running(正在运行), end(结束)
+     */
+    this._appStatus = 'chaos';
   }
   get status() {
     return this._status
@@ -1257,6 +1263,14 @@ class Chessgame {
       this.winner = this.player.name;
     }
   }
+  get appStatus() {
+    return this._appStatus
+  }
+  set appStatus(val) {
+    this.runLifeCycleHook(`${this.appStatus}->${val}`);
+
+    this._appStatus = val;
+  }
   /**
    * 当前在棋盘内的的棋子
    */
@@ -1267,7 +1281,7 @@ class Chessgame {
    * 棋盘处于将军状态,
    * 当前待下棋者为被将军方
    */
-  get isJiangjun() {
+  get isJiangJun() {
     return this.status === CHESSGAME_STATUS.JIANG_JUN
   }
   /**
@@ -1291,7 +1305,7 @@ class Chessgame {
     })
   }
   /**
-   * 猜和
+   * 猜先
    *
    * 返回`true`，表示第一位棋手为红方
    *
@@ -1301,23 +1315,31 @@ class Chessgame {
     return Math.random() > 0.5
   }
 
-  setup(firstPlayerName = 'jia_fang', secondPlayerName = 'yi_fang', opts = {}) {
+  runLifeCycleHook(str) {
+    const funcMap = {
+      'chaos->setuping': 'beforeSetup',
+      'setuping->running': 'afterSetup',
+    };
+    const hookName = funcMap[str] || 'unknown';
+
+    if (typeof this[hookName] === 'function') {
+      this[hookName].call(this);
+    }
+  }
+
+  setup(
+    firstPlayerName = Chessgame.default.firstPlayerName,
+    secondPlayerName = Chessgame.default.secondPlayerName,
+    opts = {}
+  ) {
+    this.appStatus = 'setuping';
     /**
      * chessMap：初始化的棋谱
-     * letFirstPlayer：让先，该棋手先行
+     * letFirstPlayer：让先，逻辑为：该棋手的归属方设置为红方，如果没有让先的值，则使用猜先逻辑
+     * isBlackFirst: 黑棋先行
      */
-    const {
-      chessMap,
-      letFirstPlayer,
-      isBlackFirst = false,
-      beforeSetup,
-      afterSetup,
-      i18nMap,
-    } = opts;
+    const { chessMap, letFirstPlayer, isBlackFirst = false } = opts;
 
-    if (typeof beforeSetup === 'function') {
-      beforeSetup.call(this, this);
-    }
     // 初始化棋手
     if (
       typeof firstPlayerName !== 'string' ||
@@ -1372,12 +1394,9 @@ class Chessgame {
       this.turnToNext();
     }
 
-    if (typeof afterSetup === 'function') {
-      afterSetup.call(this, this);
-    }
-
-    Chessgame.i18ner = generateI18n(i18nMap);
+    this.appStatus = 'running';
   }
+
   /**
    * 棋局执行下棋动作
    * @param {String} from
@@ -1454,9 +1473,9 @@ class Chessgame {
   /**
    * 判断下一位棋手的将帅棋是否被将军
    */
-  checkJiangjun() {
+  checkJiangJun() {
     return this.player.allChessTread.includes(
-      this.nextPlayer.jiangshuaiChess.position
+      this.nextPlayer.jiangChess.position
     )
   }
   /**
@@ -1468,10 +1487,11 @@ class Chessgame {
    */
   checkGameStatus() {
     if (this.checkEndGame()) {
+      this.appStatus = 'end';
       return false
     }
     // 判断棋子是否会[将军]到对方的**将帅**
-    if (this.checkJiangjun()) {
+    if (this.checkJiangJun()) {
       this.status = CHESSGAME_STATUS.JIANG_JUN;
     }
 
@@ -1484,7 +1504,7 @@ class Chessgame {
    */
   checkEndGame() {
     // 将死，对方棋手的将帅棋子已经被吃
-    if (this.nextPlayer.lostJiangshuaiChess) {
+    if (this.nextPlayer.lostJiangChess) {
       this.status = CHESSGAME_STATUS.WIN;
       this.reason = END_CHESSGAME_REASON.JIANG_SI;
 
@@ -1501,6 +1521,18 @@ class Chessgame {
     return false
   }
 }
+
+Chessgame.config = function (opts = {}) {
+  const { i18nMap } = opts;
+
+  Chessgame.i18ner = generateI18n(i18nMap);
+};
+Chessgame.default = {
+  firstPlayerName: 'jia',
+  secondPlayerName: 'yi',
+};
+Chessgame.i18ner = (str) => str; // 默认的i18n函数
+Chessgame.version = '__VERSION__';
 
 /**
  * 启动程序

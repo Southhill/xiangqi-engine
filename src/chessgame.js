@@ -49,7 +49,7 @@ export default class Chessgame {
   set status(value) {
     this._status = value
 
-    if (this.status === CHESSGAME_STATUS.WIN) {
+    if (value === CHESSGAME_STATUS.WIN) {
       this.winner = this.player.name
     }
   }
@@ -196,6 +196,7 @@ export default class Chessgame {
     if (this.canPlay) {
       const playOrder = this.playRecordTable.length + 1
       const playInfo = this.player.playChess(from, to, playOrder)
+      // todo：评估当前棋局
 
       if (playInfo === null) {
         return
@@ -246,7 +247,7 @@ export default class Chessgame {
    * 默认为当前棋手主动认输
    */
   confess(color = this.player.color) {
-    this._status = CHESSGAME_STATUS.WIN
+    this.status = CHESSGAME_STATUS.WIN
     this.reason = END_CHESSGAME_REASON.REN_SHU
 
     if (color === this.player.color) {
