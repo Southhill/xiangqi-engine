@@ -37,6 +37,11 @@ export default class Chessgame {
      * 胜者
      */
     this.winner = ''
+
+    /**
+     * 应用的状态，有如下值：chaos(混沌), setuping(设置中), running(正在运行), end(结束)
+     */
+    this._appStatus = 'chaos'
   }
   get status() {
     return this._status
@@ -47,6 +52,14 @@ export default class Chessgame {
     if (this.status === CHESSGAME_STATUS.WIN) {
       this.winner = this.player.name
     }
+  }
+  get appStatus() {
+    return this._appStatus
+  }
+  set appStatus(val) {
+    this.runLifeCycleHook(`${this.appStatus}->${val}`)
+
+    this._appStatus = val
   }
   /**
    * 当前在棋盘内的的棋子
@@ -92,27 +105,31 @@ export default class Chessgame {
     return Math.random() > 0.5
   }
 
+  runLifeCycleHook(str) {
+    const funcMap = {
+      'chaos->setuping': 'beforeSetup',
+      'setuping->running': 'afterSetup',
+    }
+    const hookName = funcMap[str] || 'unknown'
+
+    if (typeof this[hookName] === 'function') {
+      this[hookName].call(this)
+    }
+  }
+
   setup(
     firstPlayerName = Chessgame.default.firstPlayerName,
     secondPlayerName = Chessgame.default.secondPlayerName,
     opts = {}
   ) {
+    this.appStatus = 'setuping'
     /**
      * chessMap：初始化的棋谱
      * letFirstPlayer：让先，逻辑为：该棋手的归属方设置为红方，如果没有让先的值，则使用猜先逻辑
      * isBlackFirst: 黑棋先行
      */
-    const {
-      chessMap,
-      letFirstPlayer,
-      isBlackFirst = false,
-      beforeSetup,
-      afterSetup,
-    } = opts
+    const { chessMap, letFirstPlayer, isBlackFirst = false } = opts
 
-    if (typeof beforeSetup === 'function') {
-      beforeSetup.call(this, this)
-    }
     // 初始化棋手
     if (
       typeof firstPlayerName !== 'string' ||
@@ -167,10 +184,9 @@ export default class Chessgame {
       this.turnToNext()
     }
 
-    if (typeof afterSetup === 'function') {
-      afterSetup.call(this, this)
-    }
+    this.appStatus = 'running'
   }
+
   /**
    * 棋局执行下棋动作
    * @param {String} from
@@ -261,6 +277,7 @@ export default class Chessgame {
    */
   checkGameStatus() {
     if (this.checkEndGame()) {
+      this.appStatus = 'end'
       return false
     }
     // 判断棋子是否会[将军]到对方的**将帅**
