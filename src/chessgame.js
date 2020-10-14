@@ -71,7 +71,7 @@ export default class Chessgame {
    * 棋盘处于将军状态,
    * 当前待下棋者为被将军方
    */
-  get isJiangjun() {
+  get isJiangJun() {
     return this.status === CHESSGAME_STATUS.JIANG_JUN
   }
   /**
@@ -263,9 +263,9 @@ export default class Chessgame {
   /**
    * 判断下一位棋手的将帅棋是否被将军
    */
-  checkJiangjun() {
+  checkJiangJun() {
     return this.player.allChessTread.includes(
-      this.nextPlayer.jiangshuaiChess.position
+      this.nextPlayer.jiangChess.position
     )
   }
   /**
@@ -281,7 +281,7 @@ export default class Chessgame {
       return false
     }
     // 判断棋子是否会[将军]到对方的**将帅**
-    if (this.checkJiangjun()) {
+    if (this.checkJiangJun()) {
       this.status = CHESSGAME_STATUS.JIANG_JUN
     }
 
@@ -294,7 +294,7 @@ export default class Chessgame {
    */
   checkEndGame() {
     // 将死，对方棋手的将帅棋子已经被吃
-    if (this.nextPlayer.lostJiangshuaiChess) {
+    if (this.nextPlayer.lostJiangChess) {
       this.status = CHESSGAME_STATUS.WIN
       this.reason = END_CHESSGAME_REASON.JIANG_SI
 

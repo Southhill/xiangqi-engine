@@ -53,13 +53,13 @@ class BaseChess {
 /**
  * 【将|帅】棋
  */
-class JIANG_SHUAI_Chess extends BaseChess {
+class JiangChess extends BaseChess {
   constructor(position, color) {
     super(position, color)
     /**
      * 棋子类型
      */
-    this.type = CHESS_TYPE.JIANG_SHUAI
+    this.type = CHESS_TYPE.JIANG
     /**
      * 棋子名称
      */
@@ -81,8 +81,8 @@ class JIANG_SHUAI_Chess extends BaseChess {
    */
   static create() {
     return [
-      new JIANG_SHUAI_Chess('0,4', PLAYER_COLOR.RED),
-      new JIANG_SHUAI_Chess('9,4', PLAYER_COLOR.BLACK),
+      new JiangChess('0,4', PLAYER_COLOR.RED),
+      new JiangChess('9,4', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -99,11 +99,11 @@ class JIANG_SHUAI_Chess extends BaseChess {
       .filter((pos) => this.walkScope.includes(pos))
       .filter((po) => this.filterSelfChesses(chessboard, po))
 
-    const otherJiangshuaiChess = this.zhiquzhongjun(chessboard)
+    const otherJiangChess = this.zhiquzhongjun(chessboard)
 
     // 当可以直取中军时，将中军（对方的将帅棋）的位置加入到走法中
-    if (otherJiangshuaiChess) {
-      positions.push(otherJiangshuaiChess.position)
+    if (otherJiangChess) {
+      positions.push(otherJiangChess.position)
     }
 
     return positions
@@ -112,14 +112,14 @@ class JIANG_SHUAI_Chess extends BaseChess {
    * 可以直取中军(将吃帅操作)
    */
   zhiquzhongjun(chessboard) {
-    const selfJiangshuaiChess = chessboard.jiangshuaiChesses.find(
+    const selfJiangChess = chessboard.jiangChesses.find(
       (chess) => chess.color === this.color
     )
-    const chesses = chessboard.getChessForColumn(selfJiangshuaiChess.point[1])
+    const chesses = chessboard.getChessForColumn(selfJiangChess.point[1])
 
     return (
       chesses.length === 2 &&
-      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG_SHUAI)
+      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG)
     )
   }
 }
@@ -181,7 +181,7 @@ class ShiChess extends BaseChess {
 /**
  * 【相】棋
  */
-class XIANGChess extends BaseChess {
+class XiangChess extends BaseChess {
   constructor(position, color) {
     super(position, color)
     /**
@@ -205,10 +205,10 @@ class XIANGChess extends BaseChess {
    */
   static create() {
     return [
-      new XIANGChess('0,2', PLAYER_COLOR.RED),
-      new XIANGChess('0,6', PLAYER_COLOR.RED),
-      new XIANGChess('9,6', PLAYER_COLOR.BLACK),
-      new XIANGChess('9,2', PLAYER_COLOR.BLACK),
+      new XiangChess('0,2', PLAYER_COLOR.RED),
+      new XiangChess('0,6', PLAYER_COLOR.RED),
+      new XiangChess('9,6', PLAYER_COLOR.BLACK),
+      new XiangChess('9,2', PLAYER_COLOR.BLACK),
     ]
   }
   /**
@@ -649,11 +649,14 @@ class ZuChess extends BaseChess {
     return result.filter((po) => this.filterSelfChesses(chessboard, po))
   }
 }
+/**
+ * 创建一个标准的棋盘
+ */
 function createStandardChessMap() {
   return [
-    ...JIANG_SHUAI_Chess.create(),
+    ...JiangChess.create(),
     ...ShiChess.create(),
-    ...XIANGChess.create(),
+    ...XiangChess.create(),
     ...MaChess.create(),
     ...JuChess.create(),
     ...PaoChess.create(),
@@ -669,14 +672,14 @@ export default function createChess(info = {}) {
   let chess = null
 
   switch (type) {
-    case CHESS_TYPE.JIANG_SHUAI:
-      chess = new JIANG_SHUAI_Chess(position, color)
+    case CHESS_TYPE.JIANG:
+      chess = new JiangChess(position, color)
       break
     case CHESS_TYPE.SHI:
       chess = new ShiChess(position, color)
       break
     case CHESS_TYPE.XIANG:
-      chess = new XIANGChess(position, color)
+      chess = new XiangChess(position, color)
       break
     case CHESS_TYPE.MA:
       chess = new MaChess(position, color)
@@ -698,9 +701,9 @@ export default function createChess(info = {}) {
 }
 
 export {
-  JIANG_SHUAI_Chess,
+  JiangChess,
   ShiChess,
-  XIANGChess,
+  XiangChess,
   MaChess,
   JuChess,
   PaoChess,

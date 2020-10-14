@@ -24,9 +24,9 @@ export default class Chessboard {
   get usableChessPool() {
     return this.chessPool.filter((chess) => chess.position !== DISCARDED_CHESS)
   }
-  get jiangshuaiChesses() {
+  get jiangChesses() {
     return this.usableChessPool.filter(
-      (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
+      (chess) => chess.type === CHESS_TYPE.JIANG
     )
   }
   get chessboardScope() {

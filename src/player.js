@@ -29,10 +29,10 @@ export default class Player {
   /**
    * 丢失了将帅旗，也即对战失败了
    */
-  get lostJiangshuaiChess() {
+  get lostJiangChess() {
     return (
       this.selfChessPool.findIndex(
-        (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
+        (chess) => chess.type === CHESS_TYPE.JIANG
       ) === -1
     )
   }
@@ -54,10 +54,8 @@ export default class Player {
   /**
    * 获取棋手的将帅棋
    */
-  get jiangshuaiChess() {
-    return this.selfChessPool.find(
-      (chess) => chess.type === CHESS_TYPE.JIANG_SHUAI
-    )
+  get jiangChess() {
+    return this.selfChessPool.find((chess) => chess.type === CHESS_TYPE.JIANG)
   }
 
   /**

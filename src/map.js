@@ -6,7 +6,7 @@ export const CHESS_TYPE = {
   /**
    * 将（帅）
    */
-  JIANG_SHUAI: 'jiang_shuai',
+  JIANG: 'jiang',
   /**
    * 士
    */
