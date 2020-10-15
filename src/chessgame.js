@@ -5,6 +5,7 @@ import Player from './player'
 import Chessboard from './chessboard'
 import PlayRecord from './playrecord'
 
+import defaultConfig from './config'
 import { CHESSGAME_STATUS, PLAYER_COLOR, END_CHESSGAME_REASON } from './map'
 
 export default class Chessgame {
@@ -22,6 +23,10 @@ export default class Chessgame {
      */
     this.reason = ''
     /**
+     * 胜者
+     */
+    this.winner = ''
+    /**
      * 棋盘
      */
     this.chessboard = null
@@ -33,11 +38,6 @@ export default class Chessgame {
      * 棋局的对局状态
      */
     this._status = CHESSGAME_STATUS.VS
-    /**
-     * 胜者
-     */
-    this.winner = ''
-
     /**
      * 应用的状态，有如下值：chaos(混沌), setuping(设置中), running(正在运行), end(结束)
      */
@@ -118,8 +118,8 @@ export default class Chessgame {
   }
 
   setup(
-    firstPlayerName = Chessgame.default.firstPlayerName,
-    secondPlayerName = Chessgame.default.secondPlayerName,
+    firstPlayerName = defaultConfig.firstPlayerName,
+    secondPlayerName = defaultConfig.secondPlayerName,
     opts = {}
   ) {
     this.appStatus = 'setuping'
