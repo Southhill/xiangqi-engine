@@ -69,6 +69,21 @@ export const CHESSGAME_STATUS = {
   INVALID: 'invalid',
 }
 
+export const CHESSGAME_PERIOD = {
+  /**
+   * 开局
+   */
+  START: 'start',
+  /**
+   * 中局
+   */
+  MIDDLE: 'middle',
+  /**
+   * 残局
+   */
+  LAST: 'last',
+}
+
 export const END_CHESSGAME_REASON = {
   /**
    * 将死
