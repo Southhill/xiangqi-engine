@@ -56,35 +56,3 @@ export function generateI18n(i18nMap) {
     return i18nMap[str] || str
   }
 }
-
-export function evaluate() {
-  return 0
-}
-
-/**
- * alphaBeta算法
- * @param {Number} alphaVal
- * @param {Number} betaVal
- * @param {Number} depth 层数
- */
-function alphaBeta(alphaVal, betaVal, depth) {
-  if (depth === 0) {
-    return evaluate()
-  }
-
-  // 生成全部走法
-  // 排序全部走法
-
-  for (走法) {
-    const val = -alphaBeta(alphaVal, betaVal, depth - 1)
-
-    if (val >= betaVal) {
-      return betaVal
-    }
-    if (val > alphaVal) {
-      alphaVal = val
-    }
-  }
-
-  return alphaVal
-}

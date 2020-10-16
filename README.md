@@ -21,6 +21,8 @@ xiangqi is chinese chess game engine
 
 ## evaluate
 
+### 1. chess value table
+
 <table border="1" style="width: 464px;">
   <tbody>
     <tr>
@@ -194,6 +196,32 @@ xiangqi is chinese chess game engine
     </tr>
   </tbody>
 </table>
+
+### 2. alphaBeta算法
+
+```javascript
+function alphaBeta(alphaVal, betaVal, depth) {
+  if (depth === 0) {
+    return evaluate()
+  }
+
+  // 生成全部走法
+  // 排序全部走法
+
+  for (走法) {
+    const val = -alphaBeta(alphaVal, betaVal, depth - 1)
+
+    if (val >= betaVal) {
+      return betaVal
+    }
+    if (val > alphaVal) {
+      alphaVal = val
+    }
+  }
+
+  return alphaVal
+}
+```
 
 ## reference links
 1. [象棋（棋类益智游戏）_百度百科](https://baike.baidu.com/item/%E8%B1%A1%E6%A3%8B/30665?fr=aladdin)
