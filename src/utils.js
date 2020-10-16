@@ -1,3 +1,7 @@
+export function isObject(obj) {
+  return Object.prototype.toString.call(obj).slice(8, -1) === 'Object'
+}
+
 /**
  * 判断给定位置是否在限定的矩形框内
  */
@@ -53,6 +57,34 @@ export function generateI18n(i18nMap) {
   }
 }
 
-export function isObject(obj) {
-  return Object.prototype.toString.call(obj).slice(8, -1) === 'Object'
+export function evaluate() {
+  return 0
+}
+
+/**
+ * alphaBeta算法
+ * @param {Number} alphaVal
+ * @param {Number} betaVal
+ * @param {Number} depth 层数
+ */
+function alphaBeta(alphaVal, betaVal, depth) {
+  if (depth === 0) {
+    return evaluate()
+  }
+
+  // 生成全部走法
+  // 排序全部走法
+
+  for (走法) {
+    const val = -alphaBeta(alphaVal, betaVal, depth - 1)
+
+    if (val >= betaVal) {
+      return betaVal
+    }
+    if (val > alphaVal) {
+      alphaVal = val
+    }
+  }
+
+  return alphaVal
 }
