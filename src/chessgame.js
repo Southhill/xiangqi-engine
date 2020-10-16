@@ -6,7 +6,12 @@ import Chessboard from './chessboard'
 import PlayRecord from './playrecord'
 
 import defaultConfig from './config'
-import { CHESSGAME_STATUS, PLAYER_COLOR, END_CHESSGAME_REASON } from './map'
+import {
+  CHESSGAME_STATUS,
+  PLAYER_COLOR,
+  END_CHESSGAME_REASON,
+  CHESSGAME_PERIOD,
+} from './map'
 
 export default class Chessgame {
   constructor() {
@@ -60,6 +65,30 @@ export default class Chessgame {
     this.runLifeCycleHook(`${this.appStatus}->${val}`)
 
     this._appStatus = val
+  }
+  /**
+   * 判断当前棋局处于什么阶段
+   * 基本上来说前6个回合算开局
+   * （任意一方）车马炮6个大子死掉半数以上就算残局了
+   * 除了开局和残局其它都算中局
+   */
+  get chessGamePeriod() {
+    // 开局阶段默认为前6个回合
+    if (this.playRecordTable.length <= defaultConfig.roundNumForStart * 2) {
+      return CHESSGAME_PERIOD.START
+    }
+
+    const redBigChesses = this.chessboard.bigChesses.filter(
+      (chess) => chess.color === PLAYER_COLOR.RED
+    )
+    const blackBigChesses = this.chessboard.bigChesses.filter(
+      (chess) => chess.color === PLAYER_COLOR.BLACK
+    )
+    if (Math.min(redBigChesses.length, blackBigChesses.length) <= 3) {
+      return CHESSGAME_PERIOD.MIDDLE
+    }
+
+    return CHESSGAME_PERIOD.LAST
   }
   /**
    * 当前在棋盘内的的棋子
