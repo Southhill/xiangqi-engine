@@ -30,7 +30,7 @@ export default class Chessboard {
     )
   }
   /**
-   * 大子：車，馬，炮
+   * 棋盘上所有的大子：車，馬，炮
    */
   get bigChesses() {
     return this.usableChessPool.filter((chess) =>
