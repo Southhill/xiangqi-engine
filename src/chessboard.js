@@ -29,6 +29,14 @@ export default class Chessboard {
       (chess) => chess.type === CHESS_TYPE.JIANG
     )
   }
+  /**
+   * 棋盘上所有的大子：車，馬，炮
+   */
+  get bigChesses() {
+    return this.usableChessPool.filter((chess) =>
+      [CHESS_TYPE.JU, CHESS_TYPE.MA, CHESS_TYPE.XIANG].includes(chess.type)
+    )
+  }
   get chessboardScope() {
     // 0,0指向左上角，9,8指向右下角
     return [

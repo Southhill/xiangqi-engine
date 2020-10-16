@@ -69,6 +69,9 @@ export const CHESSGAME_STATUS = {
   INVALID: 'invalid',
 }
 
+/**
+ * 棋局当前所处的期间：开局，中局，残局
+ */
 export const CHESSGAME_PERIOD = {
   /**
    * 开局
