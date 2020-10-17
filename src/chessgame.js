@@ -8,7 +8,7 @@ import PlayRecord from './playrecord'
 import defaultConfig from './config'
 import {
   CHESSGAME_STATUS,
-  PLAYER_COLOR,
+  CHESS_COLOR,
   END_CHESSGAME_REASON,
   CHESSGAME_PERIOD,
 } from './map'
@@ -79,10 +79,10 @@ export default class Chessgame {
     }
 
     const redBigChesses = this.chessboard.bigChesses.filter(
-      (chess) => chess.color === PLAYER_COLOR.RED
+      (chess) => chess.color === CHESS_COLOR.RED
     )
     const blackBigChesses = this.chessboard.bigChesses.filter(
-      (chess) => chess.color === PLAYER_COLOR.BLACK
+      (chess) => chess.color === CHESS_COLOR.BLACK
     )
     if (Math.min(redBigChesses.length, blackBigChesses.length) <= 3) {
       return CHESSGAME_PERIOD.MIDDLE
@@ -179,14 +179,14 @@ export default class Chessgame {
     const guessFirstResult = Chessgame.guessFirst()
     const belongtoPlayer = (isFirst) => {
       if (isFirst) {
-        firstPlayer.setColor(PLAYER_COLOR.RED)
-        secondPlayer.setColor(PLAYER_COLOR.BLACK)
+        firstPlayer.setColor(CHESS_COLOR.RED)
+        secondPlayer.setColor(CHESS_COLOR.BLACK)
 
         this.player = firstPlayer
         this.nextPlayer = secondPlayer
       } else {
-        firstPlayer.setColor(PLAYER_COLOR.BLACK)
-        secondPlayer.setColor(PLAYER_COLOR.RED)
+        firstPlayer.setColor(CHESS_COLOR.BLACK)
+        secondPlayer.setColor(CHESS_COLOR.RED)
 
         this.player = secondPlayer
         this.nextPlayer = firstPlayer

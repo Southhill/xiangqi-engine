@@ -3,7 +3,7 @@
  */
 import { posInRange, halfPoint, horseLegPoint } from './utils'
 import Chessgame from './chessgame'
-import { CHESS_TYPE, PLAYER_COLOR } from './map'
+import { CHESS_TYPE, CHESS_COLOR, CHESS_WALK_POSITION } from './map'
 
 const i18ner = Chessgame.i18ner
 
@@ -63,13 +63,19 @@ class JiangChess extends BaseChess {
     /**
      * 棋子名称
      */
-    this.name = color === PLAYER_COLOR.RED ? i18ner('帥') : i18ner('将')
+    this.name = color === CHESS_COLOR.RED ? i18ner('帥') : i18ner('将')
+
+    this.holeMap = {
+      [CHESS_WALK_POSITION.CORNER]: 2,
+      [CHESS_WALK_POSITION.EDGE]: 3,
+      [CHESS_WALK_POSITION.CENTER]: 4,
+    }
   }
   /**
    * 该类型棋子行走范围：将帅棋只能走九宫格
    */
   get walkScope() {
-    if (this.color === PLAYER_COLOR.RED) {
+    if (this.color === CHESS_COLOR.RED) {
       return ['0,3', '0,4', '0,5', '1,3', '1,4', '1,5', '2,3', '2,4', '2,5']
     } else {
       return ['9,5', '9,4', '9,3', '8,5', '8,4', '8,3', '7,5', '7,4', '7,3']
@@ -77,12 +83,30 @@ class JiangChess extends BaseChess {
   }
 
   /**
+   * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
+   */
+  get walkPosition() {
+    const idx = this.walkScope.indexOf(this.position)
+
+    if ([0, 2, 6, 8].includes(idx)) return CHESS_WALK_POSITION.CORNER
+    if ([1, 3, 5, 7].includes(idx)) return CHESS_WALK_POSITION.EDGE
+    return CHESS_WALK_POSITION.CENTER
+  }
+
+  /**
+   * 棋子理论上有多少孔（类似围棋中的气）
+   */
+  get hole() {
+    return this.holeMap[this.walkPosition]
+  }
+
+  /**
    * 创造标准棋盘的【将|帅】棋
    */
   static create() {
     return [
-      new JiangChess('0,4', PLAYER_COLOR.RED),
-      new JiangChess('9,4', PLAYER_COLOR.BLACK),
+      new JiangChess('0,4', CHESS_COLOR.RED),
+      new JiangChess('9,4', CHESS_COLOR.BLACK),
     ]
   }
   /**
@@ -136,18 +160,38 @@ class ShiChess extends BaseChess {
     /**
      * 棋子名称
      */
-    this.name = color === PLAYER_COLOR.RED ? i18ner('仕') : i18ner('士')
+    this.name = color === CHESS_COLOR.RED ? i18ner('仕') : i18ner('士')
+    this.holeMap = {
+      [CHESS_WALK_POSITION.CORNER]: 1,
+      [CHESS_WALK_POSITION.CENTER]: 4,
+    }
   }
 
   /**
    * 该类型棋子行走范围：士棋走米字
    */
   get walkScope() {
-    if (this.color === PLAYER_COLOR.RED) {
+    if (this.color === CHESS_COLOR.RED) {
       return ['0,3', '0,5', '1,4', '2,3', '2,5']
     } else {
       return ['9,5', '9,3', '8,4', '7,5', '7,3']
     }
+  }
+  /**
+   * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
+   */
+  get walkPosition() {
+    const idx = this.walkScope.indexOf(this.position)
+
+    if (idx === 2) return CHESS_WALK_POSITION.CENTER
+    return CHESS_WALK_POSITION.CORNER
+  }
+
+  /**
+   * 棋子理论上有多少孔（类似围棋中的气）
+   */
+  get hole() {
+    return this.holeMap[this.walkPosition]
   }
 
   /**
@@ -155,10 +199,10 @@ class ShiChess extends BaseChess {
    */
   static create() {
     return [
-      new ShiChess('0,3', PLAYER_COLOR.RED),
-      new ShiChess('0,5', PLAYER_COLOR.RED),
-      new ShiChess('9,5', PLAYER_COLOR.BLACK),
-      new ShiChess('9,3', PLAYER_COLOR.BLACK),
+      new ShiChess('0,3', CHESS_COLOR.RED),
+      new ShiChess('0,5', CHESS_COLOR.RED),
+      new ShiChess('9,5', CHESS_COLOR.BLACK),
+      new ShiChess('9,3', CHESS_COLOR.BLACK),
     ]
   }
   /**
@@ -191,13 +235,37 @@ class XiangChess extends BaseChess {
     /**
      * 棋子名称
      */
-    this.name = color === PLAYER_COLOR.RED ? i18ner('相') : i18ner('象')
+    this.name = color === CHESS_COLOR.RED ? i18ner('相') : i18ner('象')
+    this.holeMap = {
+      [CHESS_WALK_POSITION.EDGE]: 2,
+      [CHESS_WALK_POSITION.CENTER]: 4,
+    }
   }
   /**
    * 该类型棋子行走范围：己方棋盘
    */
   get walkScope() {
-    return 'self'
+    if (this.color === CHESS_COLOR.RED) {
+      return ['0,2', '0,6', '2,8', '4,6', '4,2', '2,0', '2,4']
+    } else {
+      return ['9,2', '9,6', '7,8', '5,6', '5,2', '7,0', '7,4']
+    }
+  }
+  /**
+   * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
+   */
+  get walkPosition() {
+    const idx = this.walkScope.indexOf(this.position)
+
+    if (idx === 5) return CHESS_WALK_POSITION.CENTER
+    return CHESS_WALK_POSITION.EDGE
+  }
+
+  /**
+   * 棋子理论上有多少孔（类似围棋中的气）
+   */
+  get hole() {
+    return this.holeMap[this.walkPosition]
   }
 
   /**
@@ -205,10 +273,10 @@ class XiangChess extends BaseChess {
    */
   static create() {
     return [
-      new XiangChess('0,2', PLAYER_COLOR.RED),
-      new XiangChess('0,6', PLAYER_COLOR.RED),
-      new XiangChess('9,6', PLAYER_COLOR.BLACK),
-      new XiangChess('9,2', PLAYER_COLOR.BLACK),
+      new XiangChess('0,2', CHESS_COLOR.RED),
+      new XiangChess('0,6', CHESS_COLOR.RED),
+      new XiangChess('9,6', CHESS_COLOR.BLACK),
+      new XiangChess('9,2', CHESS_COLOR.BLACK),
     ]
   }
   /**
@@ -269,10 +337,10 @@ class MaChess extends BaseChess {
    */
   static create() {
     return [
-      new MaChess('0,1', PLAYER_COLOR.RED),
-      new MaChess('0,7', PLAYER_COLOR.RED),
-      new MaChess('9,7', PLAYER_COLOR.BLACK),
-      new MaChess('9,1', PLAYER_COLOR.BLACK),
+      new MaChess('0,1', CHESS_COLOR.RED),
+      new MaChess('0,7', CHESS_COLOR.RED),
+      new MaChess('9,7', CHESS_COLOR.BLACK),
+      new MaChess('9,1', CHESS_COLOR.BLACK),
     ]
   }
   /**
@@ -341,10 +409,10 @@ class JuChess extends BaseChess {
    */
   static create() {
     return [
-      new JuChess('0,0', PLAYER_COLOR.RED),
-      new JuChess('0,8', PLAYER_COLOR.RED),
-      new JuChess('9,8', PLAYER_COLOR.BLACK),
-      new JuChess('9,0', PLAYER_COLOR.BLACK),
+      new JuChess('0,0', CHESS_COLOR.RED),
+      new JuChess('0,8', CHESS_COLOR.RED),
+      new JuChess('9,8', CHESS_COLOR.BLACK),
+      new JuChess('9,0', CHESS_COLOR.BLACK),
     ]
   }
   /**
@@ -442,10 +510,10 @@ class PaoChess extends BaseChess {
    */
   static create() {
     return [
-      new PaoChess('2,1', PLAYER_COLOR.RED),
-      new PaoChess('2,7', PLAYER_COLOR.RED),
-      new PaoChess('7,7', PLAYER_COLOR.BLACK),
-      new PaoChess('7,1', PLAYER_COLOR.BLACK),
+      new PaoChess('2,1', CHESS_COLOR.RED),
+      new PaoChess('2,7', CHESS_COLOR.RED),
+      new PaoChess('7,7', CHESS_COLOR.BLACK),
+      new PaoChess('7,1', CHESS_COLOR.BLACK),
     ]
   }
   /**
@@ -595,7 +663,7 @@ class ZuChess extends BaseChess {
     /**
      * 棋子名称
      */
-    this.name = color === PLAYER_COLOR.RED ? i18ner('兵') : i18ner('卒')
+    this.name = color === CHESS_COLOR.RED ? i18ner('兵') : i18ner('卒')
   }
   /**
    * 该类型棋子行走范围：整张棋盘
@@ -607,7 +675,7 @@ class ZuChess extends BaseChess {
    * 该棋子是否已过河
    */
   get isCrossRiver() {
-    if (this.color === PLAYER_COLOR.RED) {
+    if (this.color === CHESS_COLOR.RED) {
       return this.point[0] > 4
     } else {
       return this.point[0] < 5
@@ -619,16 +687,16 @@ class ZuChess extends BaseChess {
    */
   static create() {
     return [
-      new ZuChess('3,0', PLAYER_COLOR.RED),
-      new ZuChess('3,2', PLAYER_COLOR.RED),
-      new ZuChess('3,4', PLAYER_COLOR.RED),
-      new ZuChess('3,6', PLAYER_COLOR.RED),
-      new ZuChess('3,8', PLAYER_COLOR.RED),
-      new ZuChess('6,8', PLAYER_COLOR.BLACK),
-      new ZuChess('6,6', PLAYER_COLOR.BLACK),
-      new ZuChess('6,4', PLAYER_COLOR.BLACK),
-      new ZuChess('6,2', PLAYER_COLOR.BLACK),
-      new ZuChess('6,0', PLAYER_COLOR.BLACK),
+      new ZuChess('3,0', CHESS_COLOR.RED),
+      new ZuChess('3,2', CHESS_COLOR.RED),
+      new ZuChess('3,4', CHESS_COLOR.RED),
+      new ZuChess('3,6', CHESS_COLOR.RED),
+      new ZuChess('3,8', CHESS_COLOR.RED),
+      new ZuChess('6,8', CHESS_COLOR.BLACK),
+      new ZuChess('6,6', CHESS_COLOR.BLACK),
+      new ZuChess('6,4', CHESS_COLOR.BLACK),
+      new ZuChess('6,2', CHESS_COLOR.BLACK),
+      new ZuChess('6,0', CHESS_COLOR.BLACK),
     ]
   }
   /**
@@ -637,7 +705,7 @@ class ZuChess extends BaseChess {
   getTreads(chessboard) {
     const [x, y] = this.point
     const result = []
-    const diffIdx = this.color === PLAYER_COLOR.RED ? 1 : -1
+    const diffIdx = this.color === CHESS_COLOR.RED ? 1 : -1
 
     if (this.isCrossRiver) {
       result.push(`${x},${y + 1}`)

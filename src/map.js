@@ -35,7 +35,7 @@ export const CHESS_TYPE = {
   ZU: 'zu',
 }
 
-export const PLAYER_COLOR = {
+export const CHESS_COLOR = {
   /**
    * 红方
    */
@@ -85,6 +85,21 @@ export const CHESSGAME_PERIOD = {
    * 残局
    */
   LAST: 'last',
+}
+
+export const CHESS_WALK_POSITION = {
+  /**
+   * 中央
+   */
+  CENTER: 'center',
+  /**
+   * 边线
+   */
+  EDGE: 'edge',
+  /**
+   * 角落
+   */
+  CORNER: 'corner',
 }
 
 export const END_CHESSGAME_REASON = {

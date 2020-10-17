@@ -1,3 +1,5 @@
+import { CHESS_COLOR } from './map'
+
 export function isObject(obj) {
   return Object.prototype.toString.call(obj).slice(8, -1) === 'Object'
 }
@@ -21,6 +23,40 @@ export function halfPoint(pointStart, pointEnd) {
   const [endX, endY] = pointEnd.split(',').map(Number)
 
   return `${(startX + endX) / 2},${(startY + endY) / 2}`
+}
+/**
+ * 当前棋子是否位于己方的棋盘边界上
+ * @param {Array} point 棋子位置, 例如: [5, 4]
+ * @param {String} color 棋子颜色
+ */
+export function locateSelfEdge(point, color) {
+  const [x, y] = point
+
+  if (color === CHESS_COLOR.RED) {
+    return x === 0 || x === 4 || y === 0 || y === 8
+  } else {
+    return x === 5 || x === 9 || y === 0 || y === 8
+  }
+}
+/**
+ * 当前棋子是否位于己方的棋盘角落上
+ * @param {String} position 棋子位置, 例如: '5,4'
+ * @param {String} color 棋子颜色
+ */
+export function locateSelfCorner(position, color) {
+  if (color === CHESS_COLOR.RED) {
+    return ['0,0', '0,8', '4,0', '4,8'].includes(position)
+  } else {
+    return ['5,0', '5,8', '9,0', '9,8'].includes(position)
+  }
+}
+/**
+ * 创建棋盘网格的二维数组
+ */
+export function createChessboardGrid() {
+  return Array.from(Array(10), (_, index) =>
+    Array.from(Array(9), (_, idx) => `${index},${idx}`)
+  )
 }
 /**
  * 【马】棋，获取马腿位置

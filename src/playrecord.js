@@ -1,4 +1,4 @@
-import { PLAYER_COLOR, RED_PLAY_STEP } from './map'
+import { CHESS_COLOR, RED_PLAY_STEP } from './map'
 
 export default class PlayRecord {
   constructor(from, to, color, chessboard) {
@@ -28,8 +28,8 @@ export default class PlayRecord {
       return '平'
     } else {
       if (
-        (this.color === PLAYER_COLOR.RED && this.endX < this.endY) ||
-        (this.color === PLAYER_COLOR.BLACK && this.endX > this.endY)
+        (this.color === CHESS_COLOR.RED && this.endX < this.endY) ||
+        (this.color === CHESS_COLOR.BLACK && this.endX > this.endY)
       ) {
         return '进'
       } else {
@@ -43,14 +43,12 @@ export default class PlayRecord {
     } else {
       const diffStep = Math.abs(this.endY - this.startY)
 
-      return this.color === PLAYER_COLOR.RED
-        ? RED_PLAY_STEP[diffStep]
-        : diffStep
+      return this.color === CHESS_COLOR.RED ? RED_PLAY_STEP[diffStep] : diffStep
     }
   }
 
   getReadStep(y) {
-    if (this.color === PLAYER_COLOR.RED) {
+    if (this.color === CHESS_COLOR.RED) {
       return RED_PLAY_STEP[9 - y]
     } else {
       return RED_PLAY_STEP[y + 1]
@@ -83,9 +81,9 @@ export default class PlayRecord {
           : sameChesses[1]
 
       if (this.startY === bigPositionChess.point[1]) {
-        result[0] = PLAYER_COLOR.RED ? '前' : '后'
+        result[0] = CHESS_COLOR.RED ? '前' : '后'
       } else {
-        result[0] = PLAYER_COLOR.RED ? '后' : '前'
+        result[0] = CHESS_COLOR.RED ? '后' : '前'
       }
 
       result[1] = this.chess.name

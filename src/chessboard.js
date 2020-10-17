@@ -3,16 +3,15 @@
  */
 
 import createChess, { createStandardChessMap } from './chess'
-import { PLAYER_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
+import { createChessboardGrid } from './utils'
+import { CHESS_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
 
 export default class Chessboard {
   constructor() {
     /**
      * 棋盘网格，并为每个网格填充相关的位置信息
      */
-    this.grid = Array.from(Array(10), (_, index) =>
-      Array.from(Array(9), (_, idx) => `${index},${idx}`)
-    )
+    this.grid = createChessboardGrid()
     /**
      * 当前棋盘所有的棋子
      */
@@ -65,7 +64,7 @@ export default class Chessboard {
    * @param {String} color
    */
   getOwnChessboardScope(color) {
-    if (color === PLAYER_COLOR.RED) {
+    if (color === CHESS_COLOR.RED) {
       return [
         [0, 0],
         [4, 8],
