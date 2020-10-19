@@ -3,12 +3,18 @@
  */
 import { posInRange, halfPoint, horseLegPoint } from './utils'
 import Chessgame from './chessgame'
-import { CHESS_TYPE, CHESS_COLOR, CHESS_WALK_POSITION } from './map'
+import {
+  CHESS_TYPE,
+  CHESS_COLOR,
+  CHESS_WALK_POSITION,
+  CHESSGAME_PERIOD,
+} from './map'
 
 const i18ner = Chessgame.i18ner
 
 class BaseChess {
-  constructor(position, color) {
+  constructor(obj) {
+    const { position, color, type, hole, zili } = obj
     /**
      * 该棋子的位置
      */
@@ -19,15 +25,41 @@ class BaseChess {
     this.playOrder = -1
 
     /**
-     * 该棋子的颜色
+     * 棋子颜色
      */
     this.color = color
+    /**
+     * 棋子类型
+     */
+    this.type = type
+    /**
+     * 活动范围
+     */
+    this.holeMap = {
+      [CHESS_WALK_POSITION.CORNER]: hole[0],
+      [CHESS_WALK_POSITION.EDGE]: hole[1],
+      [CHESS_WALK_POSITION.CENTER]: hole[2],
+    }
+    /**
+     * 子力价值
+     */
+    this.ziliMap = {
+      [CHESSGAME_PERIOD.START]: zili[0],
+      [CHESSGAME_PERIOD.MIDDLE]: zili[1],
+      [CHESSGAME_PERIOD.LAST]: zili[2],
+    }
   }
   /**
    * 获取棋子的坐标，以数组的形式返回
    */
   get point() {
     return this.position.split(',').map(Number)
+  }
+  /**
+   * 棋子理论上有多少孔（类似围棋中的气）
+   */
+  get hole() {
+    return this.holeMap[this.walkPosition]
   }
   /**
    * 设置棋子的位置
@@ -55,21 +87,17 @@ class BaseChess {
  */
 class JiangChess extends BaseChess {
   constructor(position, color) {
-    super(position, color)
-    /**
-     * 棋子类型
-     */
-    this.type = CHESS_TYPE.JIANG
+    super({
+      position,
+      color,
+      type: CHESS_TYPE.JIANG,
+      hole: [2, 3, 4],
+      zili: [0, 0, 0],
+    })
     /**
      * 棋子名称
      */
     this.name = color === CHESS_COLOR.RED ? i18ner('帥') : i18ner('将')
-
-    this.holeMap = {
-      [CHESS_WALK_POSITION.CORNER]: 2,
-      [CHESS_WALK_POSITION.EDGE]: 3,
-      [CHESS_WALK_POSITION.CENTER]: 4,
-    }
   }
   /**
    * 该类型棋子行走范围：将帅棋只能走九宫格
@@ -81,7 +109,6 @@ class JiangChess extends BaseChess {
       return ['9,5', '9,4', '9,3', '8,5', '8,4', '8,3', '7,5', '7,4', '7,3']
     }
   }
-
   /**
    * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
    */
@@ -92,14 +119,6 @@ class JiangChess extends BaseChess {
     if ([1, 3, 5, 7].includes(idx)) return CHESS_WALK_POSITION.EDGE
     return CHESS_WALK_POSITION.CENTER
   }
-
-  /**
-   * 棋子理论上有多少孔（类似围棋中的气）
-   */
-  get hole() {
-    return this.holeMap[this.walkPosition]
-  }
-
   /**
    * 创造标准棋盘的【将|帅】棋
    */
@@ -152,21 +171,18 @@ class JiangChess extends BaseChess {
  */
 class ShiChess extends BaseChess {
   constructor(position, color) {
-    super(position, color)
-    /**
-     * 棋子类型
-     */
-    this.type = CHESS_TYPE.SHI
+    super({
+      position,
+      color,
+      type: CHESS_TYPE.SHI,
+      hole: [1, 0, 4],
+      zili: [1, 2, 2],
+    })
     /**
      * 棋子名称
      */
     this.name = color === CHESS_COLOR.RED ? i18ner('仕') : i18ner('士')
-    this.holeMap = {
-      [CHESS_WALK_POSITION.CORNER]: 1,
-      [CHESS_WALK_POSITION.CENTER]: 4,
-    }
   }
-
   /**
    * 该类型棋子行走范围：士棋走米字
    */
@@ -186,14 +202,6 @@ class ShiChess extends BaseChess {
     if (idx === 2) return CHESS_WALK_POSITION.CENTER
     return CHESS_WALK_POSITION.CORNER
   }
-
-  /**
-   * 棋子理论上有多少孔（类似围棋中的气）
-   */
-  get hole() {
-    return this.holeMap[this.walkPosition]
-  }
-
   /**
    * 创造标准棋盘的【士】棋
    */
@@ -227,19 +235,17 @@ class ShiChess extends BaseChess {
  */
 class XiangChess extends BaseChess {
   constructor(position, color) {
-    super(position, color)
-    /**
-     * 棋子类型
-     */
-    this.type = CHESS_TYPE.XIANG
+    super({
+      position,
+      color,
+      type: CHESS_TYPE.XIANG,
+      hole: [0, 2, 4],
+      zili: [2, 2, 3],
+    })
     /**
      * 棋子名称
      */
     this.name = color === CHESS_COLOR.RED ? i18ner('相') : i18ner('象')
-    this.holeMap = {
-      [CHESS_WALK_POSITION.EDGE]: 2,
-      [CHESS_WALK_POSITION.CENTER]: 4,
-    }
   }
   /**
    * 该类型棋子行走范围：己方棋盘
@@ -260,14 +266,6 @@ class XiangChess extends BaseChess {
     if (idx === 5) return CHESS_WALK_POSITION.CENTER
     return CHESS_WALK_POSITION.EDGE
   }
-
-  /**
-   * 棋子理论上有多少孔（类似围棋中的气）
-   */
-  get hole() {
-    return this.holeMap[this.walkPosition]
-  }
-
   /**
    * 创造标准棋盘的【相】棋
    */
@@ -315,11 +313,13 @@ class XiangChess extends BaseChess {
  */
 class MaChess extends BaseChess {
   constructor(position, color) {
-    super(position, color)
-    /**
-     * 棋子类型
-     */
-    this.type = CHESS_TYPE.MA
+    super({
+      position,
+      color,
+      type: CHESS_TYPE.MA,
+      hole: [0, 2, 4],
+      zili: [2, 2, 3],
+    })
     /**
      * 棋子名称
      */
