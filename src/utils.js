@@ -25,29 +25,49 @@ export function halfPoint(pointStart, pointEnd) {
   return `${(startX + endX) / 2},${(startY + endY) / 2}`
 }
 /**
- * 当前棋子是否位于己方的棋盘边界上
+ * 当前棋子是否位于（己方）棋盘边界上
  * @param {Array} point 棋子位置, 例如: [5, 4]
- * @param {String} color 棋子颜色
+ * @param {String} color 棋子颜色，不传该参数时，判断该棋子是否位于棋盘边线上。否则判断棋子是否位于己方边线上
  */
-export function locateSelfEdge(point, color) {
+export function locateEdge(point, color) {
   const [x, y] = point
 
   if (color === CHESS_COLOR.RED) {
     return x === 0 || x === 4 || y === 0 || y === 8
-  } else {
+  } else if (color === CHESS_COLOR.BLACK) {
     return x === 5 || x === 9 || y === 0 || y === 8
+  } else {
+    return x === 0 || x === 9 || y === 0 || y === 8
   }
 }
 /**
- * 当前棋子是否位于己方的棋盘角落上
+ * 当前棋子是否位于（己方）棋盘角落上
  * @param {String} position 棋子位置, 例如: '5,4'
- * @param {String} color 棋子颜色
+ * @param {String} color 棋子颜色，不传该参数时，判断该棋子是否位于棋盘边线上。否则判断棋子是否位于己方边线上
  */
-export function locateSelfCorner(position, color) {
+export function locateCorner(position, color) {
   if (color === CHESS_COLOR.RED) {
     return ['0,0', '0,8', '4,0', '4,8'].includes(position)
-  } else {
+  } else if (color === CHESS_COLOR.BLACK) {
     return ['5,0', '5,8', '9,0', '9,8'].includes(position)
+  } else {
+    return ['0,0', '0,8', '9,0', '9,8'].includes(position)
+  }
+}
+/**
+ * 当前棋子是否位于（己方）棋盘角落上在过的一个位置，也即标准棋盘开局时馬的位置
+ * @param {String} position 棋子位置, 例如: '5,4'
+ * @param {String} color 棋子颜色，不传该参数时，判断该棋子是否位于棋盘边线上。否则判断棋子是否位于己方边线上
+ */
+export function locateMinorCorner(position, color) {
+  if (color === CHESS_COLOR.RED) {
+    return ['0,1', '0,7', '1,0', '1,8'].includes(position)
+  } else if (color === CHESS_COLOR.BLACK) {
+    return ['8,0', '8,8', '9,1', '9,7'].includes(position)
+  } else {
+    return ['0,1', '0,7', '1,0', '1,8', '8,0', '8,8', '9,1', '9,7'].includes(
+      position
+    )
   }
 }
 /**

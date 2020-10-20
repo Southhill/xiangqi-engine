@@ -1,7 +1,13 @@
 /**
  * 棋子
  */
-import { posInRange, halfPoint, horseLegPoint } from './utils'
+import {
+  posInRange,
+  halfPoint,
+  horseLegPoint,
+  locateCorner,
+  locateEdge,
+} from './utils'
 import Chessgame from './chessgame'
 import {
   CHESS_TYPE,
@@ -36,9 +42,9 @@ class BaseChess {
      * 活动范围
      */
     this.holeMap = {
-      [CHESS_WALK_POSITION.CORNER]: hole[0],
+      [CHESS_WALK_POSITION.CENTER]: hole[0],
       [CHESS_WALK_POSITION.EDGE]: hole[1],
-      [CHESS_WALK_POSITION.CENTER]: hole[2],
+      [CHESS_WALK_POSITION.CORNER]: hole[2],
     }
     /**
      * 子力价值
@@ -91,7 +97,7 @@ class JiangChess extends BaseChess {
       position,
       color,
       type: CHESS_TYPE.JIANG,
-      hole: [2, 3, 4],
+      hole: [4, 3, 2],
       zili: [0, 0, 0],
     })
     /**
@@ -175,7 +181,7 @@ class ShiChess extends BaseChess {
       position,
       color,
       type: CHESS_TYPE.SHI,
-      hole: [1, 0, 4],
+      hole: [4, 0, 1],
       zili: [1, 2, 2],
     })
     /**
@@ -239,7 +245,7 @@ class XiangChess extends BaseChess {
       position,
       color,
       type: CHESS_TYPE.XIANG,
-      hole: [0, 2, 4],
+      hole: [4, 2, 0],
       zili: [2, 2, 3],
     })
     /**
@@ -317,8 +323,8 @@ class MaChess extends BaseChess {
       position,
       color,
       type: CHESS_TYPE.MA,
-      hole: [0, 2, 4],
-      zili: [2, 2, 3],
+      hole: ['8/6/4', '4/3', 2],
+      zili: [4, 5, 5],
     })
     /**
      * 棋子名称
@@ -331,7 +337,14 @@ class MaChess extends BaseChess {
   get walkScope() {
     return 'all'
   }
-
+  /**
+   * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
+   */
+  get walkPosition() {
+    if (locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
+    if (locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
+    return CHESS_WALK_POSITION.CENTER
+  }
   /**
    * 创造标准棋盘的【马】棋
    */
@@ -387,11 +400,13 @@ class MaChess extends BaseChess {
  */
 class JuChess extends BaseChess {
   constructor(position, color) {
-    super(position, color)
-    /**
-     * 棋子类型
-     */
-    this.type = CHESS_TYPE.JU
+    super({
+      position,
+      color,
+      type: CHESS_TYPE.JU,
+      hole: ['17', '17', 17],
+      zili: [10, 10, 10],
+    })
     /**
      * 棋子名称
      */
@@ -403,7 +418,14 @@ class JuChess extends BaseChess {
   get walkScope() {
     return 'all'
   }
-
+  /**
+   * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
+   */
+  get walkPosition() {
+    if (locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
+    if (locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
+    return CHESS_WALK_POSITION.CENTER
+  }
   /**
    * 创造标准棋盘的【车】棋
    */
@@ -488,11 +510,13 @@ class JuChess extends BaseChess {
  */
 class PaoChess extends BaseChess {
   constructor(position, color) {
-    super(position, color)
-    /**
-     * 棋子类型
-     */
-    this.type = CHESS_TYPE.PAO
+    super({
+      position,
+      color,
+      type: CHESS_TYPE.PAO,
+      hole: ['17/13', '17/14', '17/15'],
+      zili: [5, 5, 6],
+    })
     /**
      * 棋子名称
      */
@@ -504,7 +528,14 @@ class PaoChess extends BaseChess {
   get walkScope() {
     return 'all'
   }
-
+  /**
+   * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
+   */
+  get walkPosition() {
+    if (locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
+    if (locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
+    return CHESS_WALK_POSITION.CENTER
+  }
   /**
    * 创造标准棋盘的【炮】棋
    */
@@ -655,11 +686,13 @@ class PaoChess extends BaseChess {
  */
 class ZuChess extends BaseChess {
   constructor(position, color) {
-    super(position, color)
-    /**
-     * 棋子类型
-     */
-    this.type = CHESS_TYPE.ZU
+    super({
+      position,
+      color,
+      type: CHESS_TYPE.ZU,
+      hole: ['1/3', '1/2', 1],
+      zili: [2, '1/3/5', '3/2/1'],
+    })
     /**
      * 棋子名称
      */
@@ -680,6 +713,14 @@ class ZuChess extends BaseChess {
     } else {
       return this.point[0] < 5
     }
+  }
+  /**
+   * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
+   */
+  get walkPosition() {
+    if (locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
+    if (locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
+    return CHESS_WALK_POSITION.CENTER
   }
 
   /**
