@@ -3,7 +3,7 @@
  */
 
 import createChess, { createStandardChessMap } from './chess'
-import { createChessboardGrid } from './utils'
+import { createChessboardGrid, locateEdge } from './utils'
 import { CHESS_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
 
 export default class Chessboard {
@@ -16,6 +16,10 @@ export default class Chessboard {
      * 当前棋盘所有的棋子
      */
     this.chessPool = []
+    /**
+     * 当前棋盘的价值
+     */
+    this.value = 0
   }
   get discardedChessPool() {
     return this.chessPool.filter((chess) => chess.position === DISCARDED_CHESS)
@@ -106,9 +110,9 @@ export default class Chessboard {
    * @param {String} position
    */
   isBorderLineChess(position) {
-    const [x, y] = position.split(',').map(Number)
+    const point = position.split(',').map(Number)
 
-    return x === 0 || x === 9 || y === 0 || y === 8
+    return locateEdge(point)
   }
   /**
    * 废弃掉棋子
@@ -139,4 +143,6 @@ export default class Chessboard {
       .filter((chess) => chess.point[0] === index)
       .sort((chessA, chessB) => chessA.point[1] - chessB.point[1])
   }
+
+  evaluate(period) {}
 }

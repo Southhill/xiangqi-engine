@@ -226,6 +226,7 @@ export default class Chessgame {
       const playOrder = this.playRecordTable.length + 1
       const playInfo = this.player.playChess(from, to, playOrder)
       // todo：评估当前棋局
+      this.chessboard.evaluate(this.chessGamePeriod)
 
       if (playInfo === null) {
         return
