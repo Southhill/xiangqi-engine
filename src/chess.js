@@ -1,13 +1,7 @@
 /**
  * 棋子
  */
-import {
-  posInRange,
-  halfPoint,
-  horseLegPoint,
-  locateCorner,
-  locateEdge,
-} from './utils'
+import * as Util from './utils'
 import Chessgame from './chessgame'
 import {
   CHESS_TYPE,
@@ -66,6 +60,13 @@ class BaseChess {
    */
   get hole() {
     return this.holeMap[this.walkPosition]
+  }
+  /**
+   * 获取该棋子当前时期的子力
+   * @param {String} period 当前棋局所处的时期
+   */
+  getCurrentZili(period) {
+    return this.ziliMap[period]
   }
   /**
    * 设置棋子的位置
@@ -301,11 +302,11 @@ class XiangChess extends BaseChess {
         const scope = chessboard.getOwnChessboardScope(this.color)
         const position = pos.split(',').map(Number)
 
-        return posInRange(position, scope)
+        return Util.posInRange(position, scope)
       })
       .filter((po) => {
         // 处理塞象眼的位置
-        const position = halfPoint(this.position, po)
+        const position = Util.halfPoint(this.position, po)
 
         return !chessboard.hasChess(position)
       })
@@ -341,8 +342,8 @@ class MaChess extends BaseChess {
    * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
    */
   get walkPosition() {
-    if (locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
-    if (locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
+    if (Util.locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
+    if (Util.locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
     return CHESS_WALK_POSITION.CENTER
   }
   /**
@@ -382,11 +383,11 @@ class MaChess extends BaseChess {
         const scope = chessboard.chessboardScope
         const position = pos.split(',').map(Number)
 
-        return posInRange(position, scope)
+        return Util.posInRange(position, scope)
       })
       .filter((po) => {
         // 处理蹩马腿的位置
-        const position = horseLegPoint(this.position, po)
+        const position = Util.horseLegPoint(this.position, po)
 
         return !chessboard.hasChess(position)
       })
@@ -422,8 +423,8 @@ class JuChess extends BaseChess {
    * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
    */
   get walkPosition() {
-    if (locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
-    if (locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
+    if (Util.locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
+    if (Util.locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
     return CHESS_WALK_POSITION.CENTER
   }
   /**
@@ -448,7 +449,7 @@ class JuChess extends BaseChess {
     // 处理下方
     for (let diff = 1; ; diff++) {
       const position = `${x + diff},${y}`
-      if (!posInRange([x + diff, y], scope)) {
+      if (!Util.posInRange([x + diff, y], scope)) {
         break
       }
 
@@ -462,7 +463,7 @@ class JuChess extends BaseChess {
     // 处理上方
     for (let diff = 1; ; diff++) {
       const position = `${x - diff},${y}`
-      if (!posInRange([x - diff, y], scope)) {
+      if (!Util.posInRange([x - diff, y], scope)) {
         break
       }
 
@@ -476,7 +477,7 @@ class JuChess extends BaseChess {
     // 处理右方
     for (let diff = 1; ; diff++) {
       const position = `${x},${y + diff}`
-      if (!posInRange([x, y + diff], scope)) {
+      if (!Util.posInRange([x, y + diff], scope)) {
         break
       }
 
@@ -490,7 +491,7 @@ class JuChess extends BaseChess {
     // 处理左方
     for (let diff = 1; ; diff++) {
       const position = `${x},${y - diff}`
-      if (!posInRange([x, y - diff], scope)) {
+      if (!Util.posInRange([x, y - diff], scope)) {
         break
       }
 
@@ -532,8 +533,8 @@ class PaoChess extends BaseChess {
    * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
    */
   get walkPosition() {
-    if (locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
-    if (locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
+    if (Util.locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
+    if (Util.locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
     return CHESS_WALK_POSITION.CENTER
   }
   /**
@@ -604,7 +605,7 @@ class PaoChess extends BaseChess {
     // 处理下方
     for (let diff = 1; ; diff++) {
       const position = `${x + diff},${y}`
-      if (!posInRange([x + diff, y], scope)) {
+      if (!Util.posInRange([x + diff, y], scope)) {
         break
       }
 
@@ -623,7 +624,7 @@ class PaoChess extends BaseChess {
     // 处理上方
     for (let diff = 1; ; diff++) {
       const position = `${x - diff},${y}`
-      if (!posInRange([x - diff, y], scope)) {
+      if (!Util.posInRange([x - diff, y], scope)) {
         break
       }
 
@@ -642,7 +643,7 @@ class PaoChess extends BaseChess {
     // 处理右方
     for (let diff = 1; ; diff++) {
       const position = `${x},${y + diff}`
-      if (!posInRange([x, y + diff], scope)) {
+      if (!Util.posInRange([x, y + diff], scope)) {
         break
       }
 
@@ -661,7 +662,7 @@ class PaoChess extends BaseChess {
     // 处理左方
     for (let diff = 1; ; diff++) {
       const position = `${x},${y - diff}`
-      if (!posInRange([x, y - diff], scope)) {
+      if (!Util.posInRange([x, y - diff], scope)) {
         break
       }
 
@@ -682,7 +683,7 @@ class PaoChess extends BaseChess {
   }
 }
 /**
- * 【卒】棋
+ * 【卒|兵】棋
  */
 class ZuChess extends BaseChess {
   constructor(position, color) {
@@ -718,13 +719,13 @@ class ZuChess extends BaseChess {
    * 当前所处的位置相对于理论上棋子所有能走的位置：中央，边线，角落
    */
   get walkPosition() {
-    if (locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
-    if (locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
+    if (Util.locateCorner(this.position)) return CHESS_WALK_POSITION.CORNER
+    if (Util.locateEdge(this.position)) return CHESS_WALK_POSITION.EDGE
     return CHESS_WALK_POSITION.CENTER
   }
 
   /**
-   * 创造标准棋盘的【炮】棋
+   * 创造标准棋盘的【兵】棋
    */
   static create() {
     return [
@@ -739,6 +740,37 @@ class ZuChess extends BaseChess {
       new ZuChess('6,2', CHESS_COLOR.BLACK),
       new ZuChess('6,0', CHESS_COLOR.BLACK),
     ]
+  }
+  /**
+   * 获取兵棋的子力: [2, '1/3/5', '3/2/1']
+   * @param {String} period 当前棋局的时期
+   */
+  getCurrentZili(period) {
+    const result = this.ziliMap[period]
+    if (period === CHESSGAME_PERIOD.START) return result
+    if (period === CHESSGAME_PERIOD.MIDDLE) {
+      // 中局的子力价值，兵在过河前和过河后具有不同的兑子价值，进入九宫时价值最高
+      const arr = result.split('/').map(Number)
+
+      if (this.isCrossRiver) {
+        return Util.locateNinePalaces(this.point, this.color) ? arr[2] : arr[1]
+      } else {
+        return arr[0]
+      }
+    }
+    if (period === CHESSGAME_PERIOD.LAST) {
+      // 残局的子力价值，兵的残局价值取决于兵的位置，底兵最低，其次是低兵（次底线和倒数第三线），高兵（更高的位置）最高
+      const arr = result.split('/').map(Number)
+
+      if (Util.locateBaseline(this.point, this.color, true)) {
+        return arr[2]
+      }
+      if (Util.locateLowerBaseline(this.point, this.color, true)) {
+        return arr[1]
+      }
+
+      return arr[0]
+    }
   }
   /**
    * 【炮棋】下一步的走法位置枚举

@@ -39,11 +39,11 @@ export const CHESS_COLOR = {
   /**
    * 红方
    */
-  RED: 'red',
+  RED: 0,
   /**
    * 黑方
    */
-  BLACK: 'black',
+  BLACK: 1,
 }
 
 export const CHESSGAME_STATUS = {

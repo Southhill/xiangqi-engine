@@ -21,7 +21,13 @@ xiangqi is chinese chess game engine
 
 ## evaluate
 
-### 1. chess value table
+### 1. 审局
+1. 子力价值对比
+2. 强子（車，馬，炮）所处的位置
+3. 全盘子力之间的联系和作用
+4. 要害部位是否受到攻击（要害部位指中路，两肋底线，及两翼三七路线）
+
+### 2. chess value table
 
 <table border="1" style="width: 464px;">
   <tbody>
@@ -197,7 +203,7 @@ xiangqi is chinese chess game engine
   </tbody>
 </table>
 
-### 2. alphaBeta算法
+### 3. alphaBeta算法
 
 ```javascript
 function alphaBeta(alphaVal, betaVal, depth) {

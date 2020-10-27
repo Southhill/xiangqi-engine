@@ -1,5 +1,8 @@
 import { CHESS_COLOR } from './map'
 
+function flips(num) {
+  return num ^ 1
+}
 export function isObject(obj) {
   return Object.prototype.toString.call(obj).slice(8, -1) === 'Object'
 }
@@ -41,6 +44,30 @@ export function locateEdge(point, color) {
   }
 }
 /**
+ * 该棋子是否位于对方底线上
+ */
+export function locateBaseline(point, color, isNegation) {
+  const [x] = point
+
+  if (color !== undefined && isNegation) {
+    color = flips(color)
+  }
+
+  return color === CHESS_COLOR.RED ? x === 9 : x === 0
+}
+/**
+ * 该棋子是否位于对方低线上
+ */
+export function locateLowerBaseline(point, color, isNegation) {
+  const [x] = point
+
+  if (color !== undefined && isNegation) {
+    color = flips(color)
+  }
+
+  return color === CHESS_COLOR.RED ? [8, 9].includes(x) : [0, 1].includes(x)
+}
+/**
  * 当前棋子是否位于（己方）棋盘角落上
  * @param {String} position 棋子位置, 例如: '5,4'
  * @param {String} color 棋子颜色，不传该参数时，判断该棋子是否位于棋盘边线上。否则判断棋子是否位于己方边线上
@@ -67,6 +94,35 @@ export function locateMinorCorner(position, color) {
   } else {
     return ['0,1', '0,7', '1,0', '1,8', '8,0', '8,8', '9,1', '9,7'].includes(
       position
+    )
+  }
+}
+/**
+ * 当前棋子是否位于（对方）九宫中
+ * @param {Array} point 棋子位置
+ * @param {String} color 棋子颜色
+ */
+export function locateNinePalaces(point, color) {
+  if (color === CHESS_COLOR.RED) {
+    return posInRange(point, [
+      [7, 3],
+      [9, 5],
+    ])
+  } else if (color === CHESS_COLOR.BLACK) {
+    return posInRange(point, [
+      [0, 3],
+      [2, 5],
+    ])
+  } else {
+    return (
+      posInRange(point, [
+        [7, 3],
+        [9, 5],
+      ]) ||
+      posInRange(point, [
+        [0, 3],
+        [2, 5],
+      ])
     )
   }
 }
