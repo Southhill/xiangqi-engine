@@ -4,6 +4,7 @@
 
 import createChess, { createStandardChessMap } from './chess'
 import { createChessboardGrid, locateEdge } from './utils'
+import evaluate from './evaluate'
 import { CHESS_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
 
 export default class Chessboard {
@@ -144,5 +145,7 @@ export default class Chessboard {
       .sort((chessA, chessB) => chessA.point[1] - chessB.point[1])
   }
 
-  evaluate(period) {}
+  evaluate(period) {
+    this.value = evaluate(this.usableChessPool, period)
+  }
 }
