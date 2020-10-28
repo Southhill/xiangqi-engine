@@ -17,6 +17,10 @@ export default class Player {
      * 棋盘
      */
     this.chessboard = null
+    /**
+     *
+     */
+    this.mirror = null
   }
   /**
    * 棋手当前在棋局上的所有己方可用的棋子
@@ -44,7 +48,9 @@ export default class Player {
     const result = []
 
     this.selfChessPool.forEach((chess) => {
-      const treads = chess.getTreads(this.chessboard)
+      const treads = chess.getTreads(this.chessboard).map((pos) => {
+        return `${chess.color}-${chess.type}:${chess.position}=>${pos}`
+      })
 
       result.push(...treads)
     })
@@ -77,6 +83,7 @@ export default class Player {
    */
   sitdown(chessboard) {
     this.chessboard = chessboard
+    this.mirror = chessboard
   }
   /**
    * 棋手下棋，返回`null`表明预定下棋位置错误
@@ -104,4 +111,5 @@ export default class Player {
 
     return record
   }
+  simulate() {}
 }

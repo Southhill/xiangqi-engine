@@ -18,6 +18,10 @@ export default class Chessboard {
      */
     this.chessPool = []
     /**
+     * 当前棋盘所有的棋子的镜像
+     */
+    this.mirrorChessPool = []
+    /**
      * 当前棋盘的价值
      */
     this.value = 0
@@ -63,6 +67,12 @@ export default class Chessboard {
         this.chessPool.push(chess)
       })
     }
+  }
+  /**
+   * 获取当前棋盘上的棋谱
+   */
+  getCurrentChessMap() {
+    return this.chessPool.map((chess) => chess.metaData)
   }
   /**
    * 获取某颜色棋手的己方棋盘位置的矩形信息

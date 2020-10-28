@@ -292,12 +292,15 @@ export default class Chessgame {
   finishGameByHost() {}
 
   /**
-   * 判断下一位棋手的将帅棋是否被将军
+   * 判断下一位棋手的将帅棋是否被将军的棋招
    */
   checkJiangJun() {
-    return this.player.allChessTread.includes(
-      this.nextPlayer.jiangChess.position
-    )
+    return this.player.allChessTread.findIndex((treadRecord) => {
+      const tread = treadRecord.split(':')[1]
+      const to = tread.split('=>')[1]
+
+      return to === this.nextPlayer.jiangChess.position
+    })
   }
   /**
    * 检测棋局状态

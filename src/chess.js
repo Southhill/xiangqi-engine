@@ -62,6 +62,12 @@ class BaseChess {
     return this.holeMap[this.walkPosition]
   }
   /**
+   * 棋子的元数据，和构造函数调用时的传参是一致的
+   */
+  get metaData() {
+    return { type: this.type, color: this.type, position: this.position }
+  }
+  /**
    * 获取该棋子当前时期的子力
    * @param {String} period 当前棋局所处的时期
    */
