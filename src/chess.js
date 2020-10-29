@@ -20,7 +20,7 @@ class BaseChess {
      */
     this.position = position
     /**
-     * 该棋子废弃于第几手棋
+     * 该棋子废弃于第几手棋, -2表示在模拟的时候废弃掉模拟棋子
      */
     this.playOrder = -1
 

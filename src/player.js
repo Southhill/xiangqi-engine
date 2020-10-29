@@ -2,6 +2,7 @@
  * 棋手
  */
 import { CHESS_TYPE } from './map'
+import { stringTread } from './utils'
 
 export default class Player {
   constructor(name) {
@@ -17,10 +18,6 @@ export default class Player {
      * 棋盘
      */
     this.chessboard = null
-    /**
-     *
-     */
-    this.mirror = null
   }
   /**
    * 棋手当前在棋局上的所有己方可用的棋子
@@ -49,7 +46,7 @@ export default class Player {
 
     this.selfChessPool.forEach((chess) => {
       const treads = chess.getTreads(this.chessboard).map((pos) => {
-        return `${chess.color}-${chess.type}:${chess.position}=>${pos}`
+        return stringTread({ from: chess.position, to: pos, chess })
       })
 
       result.push(...treads)
@@ -83,7 +80,6 @@ export default class Player {
    */
   sitdown(chessboard) {
     this.chessboard = chessboard
-    this.mirror = chessboard
   }
   /**
    * 棋手下棋，返回`null`表明预定下棋位置错误
@@ -100,16 +96,15 @@ export default class Player {
 
     let record = ''
     if (this.chessboard.hasChess(to)) {
-      const discardedChess = this.chessboard.discard(to, playOrder)
+      const discardChess = this.chessboard.discard(to, playOrder)
 
-      record = `${playOrder}:${chess.color}-${chess.type}:${from}=>${to}:${discardedChess.color}-${discardedChess.type}`
+      record = stringTread({ playOrder, chess, from, to, discardChess })
     } else {
-      record = `${playOrder}:${chess.color}-${chess.type}:${from}=>${to}`
+      record = stringTread({ playOrder, chess, from, to })
     }
 
     chess.setPosition(to)
 
     return record
   }
-  simulate() {}
 }

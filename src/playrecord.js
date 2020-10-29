@@ -1,12 +1,11 @@
 import { CHESS_COLOR, RED_PLAY_STEP } from './map'
 
 export default class PlayRecord {
-  constructor(from, to, color, chessboard) {
+  constructor(from, to, chess, chessboard) {
     this.from = from
     this.to = to
-    this.color = color
+    this.chess = chess
     this.chessboard = chessboard
-    this.chess = chessboard.getChess(from)
 
     const [x1, y1] = from.split(',').map(Number)
     const [x2, y2] = to.split(',').map(Number)
@@ -15,6 +14,9 @@ export default class PlayRecord {
     this.startY = y1
     this.endX = x2
     this.endY = y2
+  }
+  get color() {
+    return this.chess.color
   }
   /**
    * 棋子斜走：馬，相，士

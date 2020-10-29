@@ -4,6 +4,7 @@
 import Player from './player'
 import Chessboard from './chessboard'
 import PlayRecord from './playrecord'
+import { parseTread } from './utils'
 
 import defaultConfig from './config'
 import {
@@ -114,11 +115,8 @@ export default class Chessgame {
   }
   get readPlayRecordTable() {
     return this.playRecordTable.map((record) => {
-      // eslint-disable-next-line no-unused-vars
-      const [playOrder, chess, track, discardedChess] = record.split(':')
-      const [color] = chess.split('-')
-      const [from, to] = track.split('=>')
-      const pr = new PlayRecord(from, to, color, this.chessboard)
+      const { from, to, chess } = parseTread(record)
+      const pr = new PlayRecord(from, to, chess, this.chessboard)
 
       return pr.getPlayRecord()
     })
@@ -256,13 +254,11 @@ export default class Chessgame {
   regretChess() {
     // 丢弃棋招记录
     const record = this.playRecordTable.pop()
-    // eslint-disable-next-line no-unused-vars
-    const [playOrder, chess, track, discardedChess] = record.split(':')
-    const [from, to] = track.split('=>')
+    const { playOrder, from, to, discardedChess } = parseTread(record)
 
     this.chessboard.getChess(to).setPosition(from)
 
-    if (discardedChess !== undefined) {
+    if (discardedChess) {
       // 有吃棋子的行为，将吃掉的棋子恢复原位
       const restoredChess = this.chessboard.getDiscardedChess(Number(playOrder))
 
@@ -296,8 +292,7 @@ export default class Chessgame {
    */
   checkJiangJun() {
     return this.player.allChessTread.findIndex((treadRecord) => {
-      const tread = treadRecord.split(':')[1]
-      const to = tread.split('=>')[1]
+      const { to } = parseTread(treadRecord)
 
       return to === this.nextPlayer.jiangChess.position
     })

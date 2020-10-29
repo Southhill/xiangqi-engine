@@ -231,3 +231,9 @@ function alphaBeta(alphaVal, betaVal, depth) {
 
 ## reference links
 1. [象棋（棋类益智游戏）_百度百科](https://baike.baidu.com/item/%E8%B1%A1%E6%A3%8B/30665?fr=aladdin)
+
+## note
+内存：数据 < 类
+simulate: 输入棋谱，返回对应棋谱以及对应的评估值
+mirror->多个模拟方向->this.player.allChessTread.forEach(tread => mirror.simulate(tread))
+      ->多个模拟深度

@@ -168,3 +168,28 @@ export function generateI18n(i18nMap) {
     return i18nMap[str] || str
   }
 }
+
+export function stringTread(info = {}) {
+  const { playOrder = '', chess, from, to, discardChess = null } = info
+
+  let result = `${playOrder}:${chess.color}-${chess.type}-${chess.name}:${from}=>${to}`
+
+  if (discardChess) {
+    result += `:${discardChess.color}-${discardChess.type}-${chess.name}`
+  }
+
+  return result
+}
+
+export function parseTread(treadStr) {
+  const [playOrder = '', chess, way, discardChess = null] = treadStr.split(':')
+  const [from, to] = way.split('=>')
+
+  return {
+    playOrder,
+    chess,
+    from,
+    to,
+    discardChess,
+  }
+}

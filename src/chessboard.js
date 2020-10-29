@@ -3,8 +3,8 @@
  */
 
 import createChess, { createStandardChessMap } from './chess'
-import { createChessboardGrid, locateEdge } from './utils'
 import evaluate from './evaluate'
+import { createChessboardGrid, locateEdge, parseTread } from './utils'
 import { CHESS_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
 
 export default class Chessboard {
@@ -18,13 +18,13 @@ export default class Chessboard {
      */
     this.chessPool = []
     /**
-     * 当前棋盘所有的棋子的镜像
-     */
-    this.mirrorChessPool = []
-    /**
      * 当前棋盘的价值
      */
     this.value = 0
+    /**
+     * 当前棋盘的模拟
+     */
+    this.simulator = new Simulator()
   }
   get discardedChessPool() {
     return this.chessPool.filter((chess) => chess.position === DISCARDED_CHESS)
@@ -38,7 +38,7 @@ export default class Chessboard {
     )
   }
   /**
-   * 棋盘上所有的大子：車，馬，炮
+   * 棋盘上所有的大（强）子：車，馬，炮
    */
   get bigChesses() {
     return this.usableChessPool.filter((chess) =>
@@ -57,16 +57,12 @@ export default class Chessboard {
    */
   initChessMap(chessMap) {
     if (Array.isArray(chessMap)) {
-      chessMap.forEach((item) => {
-        this.chessPool.push(createChess(item))
-      })
+      this.chessPool = chessMap.map(createChess)
     } else {
-      const allChess = createStandardChessMap()
-
-      allChess.forEach((chess) => {
-        this.chessPool.push(chess)
-      })
+      this.chessPool = createStandardChessMap()
     }
+
+    this.value = 0
   }
   /**
    * 获取当前棋盘上的棋谱
@@ -157,5 +153,24 @@ export default class Chessboard {
 
   evaluate(period) {
     this.value = evaluate(this.usableChessPool, period)
+  }
+}
+
+class Simulator extends Chessboard {
+  simulate(tread, period) {
+    const { from, to } = parseTread(tread)
+    const chess = this.getChess(from)
+
+    if (this.hasChess(to)) {
+      this.discard(to, '-2')
+    }
+
+    chess.setPosition(to)
+    this.evaluate(period)
+
+    return {
+      value: this.value,
+      chessMap: this.getCurrentChessMap(),
+    }
   }
 }
