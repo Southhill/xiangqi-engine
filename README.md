@@ -1,10 +1,8 @@
-# xiangqi
-
-## description
+## Description
 
 xiangqi is chinese chess game engine
 
-## xiangqi rules
+## Rules
 
 ### 1. chessboard rules
 整个棋盘以“河界”分为相等的两部分。为了比赛记录和学习棋谱方便起见，现行规则规定：按九条竖线从右至左用中文数字一至九来表示红方的每条竖线，用阿拉伯数字1只至9来表示黑方的每条竖线。己方的棋子始终使用己方的线路编号，无论棋子是否“过河”。
@@ -19,7 +17,7 @@ xiangqi is chinese chess game engine
 第三个字表示棋子移动的方向，横走用”平“，向对方底线前进用”进“，向己方底线后退用”退“。
 第四个字分为两类：棋子在直线上进退时，表示棋子进退的步数；当棋子平走或斜走的时候，表示所到达直线的编号。
 
-## evaluate
+## Evaluate
 
 ### 1. 审局
 1. 子力价值对比
@@ -229,10 +227,10 @@ function alphaBeta(alphaVal, betaVal, depth) {
 }
 ```
 
-## reference links
+## Reference links
 1. [象棋（棋类益智游戏）_百度百科](https://baike.baidu.com/item/%E8%B1%A1%E6%A3%8B/30665?fr=aladdin)
 
-## note
+## Note
 内存：数据 < 类
 simulate: 输入棋谱，返回对应棋谱以及对应的评估值
 mirror->多个模拟方向->this.player.allChessTread.forEach(tread => mirror.simulate(tread))
