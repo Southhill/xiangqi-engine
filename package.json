@@ -1,5 +1,5 @@
 {
-  "name": "xiangqi",
+  "name": "xiangqi-engine",
   "version": "1.0.0",
   "description": "chinese xiangqi game engine",
   "main": "./dist/dist.es.js",
@@ -9,6 +9,12 @@
   },
   "author": "Cao",
   "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/dist.es.js"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/southhill/xiangqi.git"
