@@ -5,7 +5,7 @@ import { CHESS_TYPE } from './map.js'
 import { stringTread } from './utils.js'
 
 export default class Player {
-  constructor(name) {
+  constructor(name, chessboard) {
     /**
      * 棋手的名称：甲方，乙方
      */
@@ -14,10 +14,15 @@ export default class Player {
      * 棋手的颜色：红色，黑色。真实的棋局中，红色棋手先走
      */
     this.color = ''
+
+    /**
+     * 棋手的将/帅棋
+     */
+    this.jiangChess = null;
     /**
      * 棋盘
      */
-    this.chessboard = null
+    this.chessboard = chessboard
   }
   /**
    * 棋手当前在棋局上的所有己方可用的棋子
@@ -55,13 +60,6 @@ export default class Player {
     return result
   }
   /**
-   * 获取棋手的将帅棋
-   */
-  get jiangChess() {
-    return this.selfChessPool.find((chess) => chess.type === CHESS_TYPE.JIANG)
-  }
-
-  /**
    * 获取己方某个位置的棋子
    */
   getSelfChess(position) {
@@ -69,17 +67,12 @@ export default class Player {
   }
 
   /**
-   * 设置棋手的颜色
+   * 设置棋手的身份
    * @param {String} color
    */
-  setColor(color) {
+  setIdentity(color) {
     this.color = color
-  }
-  /**
-   * 关联棋盘
-   */
-  sitdown(chessboard) {
-    this.chessboard = chessboard
+    this.jiangChess = this.chessboard.find(chess => chess.color === color && chess.type === CHESS_TYPE.JIANG);
   }
   /**
    * 棋手下棋，返回`null`表明预定下棋位置错误

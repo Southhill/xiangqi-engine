@@ -172,38 +172,15 @@ export default class Chessgame {
 
     this.appStatus = 'setuping'
 
-    const firstPlayer = new Player(firstPlayerName)
-    const secondPlayer = new Player(secondPlayerName)
-    const belongtoPlayer = (isFirst) => {
-      if (isFirst) {
-        firstPlayer.setColor(CHESS_COLOR.RED)
-        secondPlayer.setColor(CHESS_COLOR.BLACK)
-
-        this.player = firstPlayer
-        this.nextPlayer = secondPlayer
-      } else {
-        firstPlayer.setColor(CHESS_COLOR.BLACK)
-        secondPlayer.setColor(CHESS_COLOR.RED)
-
-        this.player = secondPlayer
-        this.nextPlayer = firstPlayer
-      }
-    }
-
-    // 如果有设置让先，则让先，否则猜先
-    if (hasLetFirst) {
-      belongtoPlayer(letFirstPlayer === firstPlayerName)
-    } else {
-      belongtoPlayer(Chessgame.guessFirst())
-    }
-
     // 初始化棋盘
     this.chessboard = new Chessboard()
     // 初始化棋谱
     this.chessboard.initChessMap(chessMap)
 
-    this.player.sitdown(this.chessboard)
-    this.nextPlayer.sitdown(this.chessboard)
+    const firstPlayer = new Player(firstPlayerName, this.chessboard)
+    const secondPlayer = new Player(secondPlayerName, this.chessboard)
+
+    this.assignPlayer(firstPlayer, secondPlayer);
 
     // 黑方先行，多见于象棋残谱破解
     if (isBlackFirst) {
@@ -211,6 +188,36 @@ export default class Chessgame {
     }
 
     this.appStatus = 'running'
+  }
+
+  /**
+   * 分配棋手身份
+   *
+   * 一般地，红方现行
+   */
+  assignPlayer(firstPlayer, secondPlayer, letFirstPlayer) {
+    const belongtoPlayer = (isFirst) => {
+      if (isFirst) {
+        firstPlayer.setIdentity(CHESS_COLOR.RED)
+        secondPlayer.setIdentity(CHESS_COLOR.BLACK)
+
+        this.player = firstPlayer
+        this.nextPlayer = secondPlayer
+      } else {
+        firstPlayer.setIdentity(CHESS_COLOR.BLACK)
+        secondPlayer.setIdentity(CHESS_COLOR.RED)
+
+        this.player = secondPlayer
+        this.nextPlayer = firstPlayer
+      }
+    }
+
+    // 如果有设置让先，则让先，否则猜先
+    if (letFirstPlayer) {
+      belongtoPlayer(letFirstPlayer === firstPlayer.name)
+    } else {
+      belongtoPlayer(Chessgame.guessFirst())
+    }
   }
 
   /**

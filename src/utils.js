@@ -1,7 +1,7 @@
 import { CHESS_COLOR } from './map.js'
 
-function flips(num) {
-  return num ^ 1
+export function flips(num) {
+  return Number(num) ^ 1
 }
 export function isObject(obj) {
   return Object.prototype.toString.call(obj).slice(8, -1) === 'Object'

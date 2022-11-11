@@ -1,6 +1,5 @@
 import Chessboard from './chessboard.js';
 import { CHESS_COLOR, DISCARDED_CHESS, RED_PLAY_STEP } from './map.js'
-import { parseTread } from './utils.js';
 
 export default class PlayRecord {
   constructor(recordIndex, from, to, chess, discardChess) {

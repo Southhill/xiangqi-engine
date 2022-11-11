@@ -30,17 +30,17 @@ export default class Chessboard {
      * 走法记录表：用于悔棋(撤销)
      */
     this.playRecordTable = new PlayRecordTable();
+
+    this.jiangChessMap = {
+      [CHESS_COLOR.RED]: null,
+      [CHESS_COLOR.BLACK]: null,
+    }
   }
   get discardedChessPool() {
     return this.chessPool.filter((chess) => chess.position === DISCARDED_CHESS)
   }
   get usableChessPool() {
     return this.chessPool.filter((chess) => chess.position !== DISCARDED_CHESS)
-  }
-  get jiangChesses() {
-    return this.usableChessPool.filter(
-      (chess) => chess.type === CHESS_TYPE.JIANG
-    )
   }
   /**
    * 棋盘上所有的大（强）子：車，馬，炮
@@ -74,6 +74,9 @@ export default class Chessboard {
     } else {
       this.chessPool = createStandardChessMap()
     }
+
+    this.jiangChessMap[CHESS_COLOR.RED] = this.chessPool.find(chess => chess.color === CHESS_COLOR.RED && chess.type === CHESS_TYPE.JIANG)
+    this.jiangChessMap[CHESS_COLOR.BLACK] = this.chessPool.find(chess => chess.color === CHESS_COLOR.BLACK && chess.type === CHESS_TYPE.JIANG)
 
     this.value = 0
   }

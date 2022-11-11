@@ -15,6 +15,10 @@ const i18ner = Chessgame.i18ner
 class BaseChess {
   constructor(obj) {
     const { position, color, type, hole, zili } = obj
+
+    if (![CHESS_COLOR.RED, CHESS_COLOR.BLACK].includes(color)) {
+      throw new Error(`chess color: ${color} set wrong`)
+    }
     /**
      * 该棋子的位置
      */
@@ -48,6 +52,9 @@ class BaseChess {
       [CHESSGAME_PERIOD.MIDDLE]: zili[1],
       [CHESSGAME_PERIOD.LAST]: zili[2],
     }
+  }
+  get otherColor() {
+    return flips(this.color)
   }
   /**
    * 获取棋子的坐标，以数组的形式返回
@@ -155,10 +162,9 @@ class JiangChess extends BaseChess {
       .filter((pos) => this.walkScope.includes(pos))
       .filter((po) => this.filterSelfChesses(chessboard, po))
 
-    const otherJiangChess = this.zhiquzhongjun(chessboard)
-
     // 当可以直取中军时，将中军（对方的将帅棋）的位置加入到走法中
-    if (otherJiangChess) {
+    if (this.checkZhiquzhongjun(chessboard)) {
+      const otherJiangChess = chessboard.jiangChessMap[this.otherColor]
       positions.push(otherJiangChess.position)
     }
 
@@ -167,16 +173,11 @@ class JiangChess extends BaseChess {
   /**
    * 可以直取中军(将吃帅操作)
    */
-  zhiquzhongjun(chessboard) {
-    const selfJiangChess = chessboard.jiangChesses.find(
-      (chess) => chess.color === this.color
-    )
+  checkZhiquzhongjun(chessboard) {
+    const selfJiangChess = chessboard.jiangChessMap[this.color]
     const chesses = chessboard.getChessForColumn(selfJiangChess.point[1])
 
-    return (
-      chesses.length === 2 &&
-      chesses.every((chess) => chess.type === CHESS_TYPE.JIANG)
-    )
+    return chesses.length === 2
   }
 }
 /**
