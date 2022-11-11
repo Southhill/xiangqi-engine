@@ -1,14 +1,14 @@
 /**
  * 棋子
  */
-import * as Util from './utils'
-import Chessgame from './chessgame'
+import * as Util from './utils.js'
+import Chessgame from './chessgame.js'
 import {
   CHESS_TYPE,
   CHESS_COLOR,
   CHESS_WALK_POSITION,
   CHESSGAME_PERIOD,
-} from './map'
+} from './map.js'
 
 const i18ner = Chessgame.i18ner
 

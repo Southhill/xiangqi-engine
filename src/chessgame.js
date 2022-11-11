@@ -1,18 +1,18 @@
 /**
  * 棋局
  */
-import Player from './player'
-import Chessboard from './chessboard'
-import PlayRecord from './playrecord'
-import { parseTread } from './utils'
+import Player from './player.js'
+import Chessboard from './chessboard.js'
+import PlayRecord from './playrecord.js'
+import { parseTread } from './utils.js'
 
-import defaultConfig from './config'
+import conf from './config.js'
 import {
   CHESSGAME_STATUS,
   CHESS_COLOR,
   END_CHESSGAME_REASON,
   CHESSGAME_PERIOD,
-} from './map'
+} from './map.js'
 
 export default class Chessgame {
   constructor() {
@@ -37,15 +37,15 @@ export default class Chessgame {
      */
     this.chessboard = null
     /**
-     * 走法记录表：用于悔棋(撤销)
-     */
-    this.playRecordTable = []
-    /**
      * 棋局的对局状态
      */
     this._status = CHESSGAME_STATUS.VS
     /**
-     * 应用的状态，有如下值：chaos(混沌), setuping(设置中), running(正在运行), end(结束)
+     * 应用的状态，有如下值：
+     * - chaos(混沌)
+     * - setuping(设置中)
+     * - running(正在运行)
+     * - end(结束)
      */
     this._appStatus = 'chaos'
   }
@@ -69,13 +69,16 @@ export default class Chessgame {
   }
   /**
    * 判断当前棋局处于什么阶段
+   *
    * 基本上来说前6个回合算开局
+   *
    * （任意一方）车马炮6个大子死掉半数以上就算残局了
+   *
    * 除了开局和残局其它都算中局
    */
   get chessGamePeriod() {
     // 开局阶段默认为前6个回合
-    if (this.playRecordTable.length <= defaultConfig.roundNumForStart * 2) {
+    if (this.chessboard.playRecordTable.length <= conf.roundNumForStart * 2) {
       return CHESSGAME_PERIOD.START
     }
 
@@ -113,20 +116,17 @@ export default class Chessgame {
       this.status
     )
   }
+  /**
+   * 获取人类可读的走法记录表
+   */
   get readPlayRecordTable() {
-    return this.playRecordTable.map((record) => {
-      const { from, to, chess } = parseTread(record)
-      const pr = new PlayRecord(from, to, chess, this.chessboard)
-
-      return pr.getPlayRecord()
-    })
+    return this.chessboard.playRecordTable.humanReadRecordTable
   }
   /**
    * 猜先
    *
-   * 返回`true`，表示第一位棋手为红方
-   *
-   * 返回`false`，表示第二位棋手为红方
+   * - 返回`true`，表示第一位棋手为红方
+   * - 返回`false`，表示第二位棋手为红方
    */
   static guessFirst() {
     return Math.random() > 0.5
@@ -145,18 +145,10 @@ export default class Chessgame {
   }
 
   setup(
-    firstPlayerName = defaultConfig.firstPlayerName,
-    secondPlayerName = defaultConfig.secondPlayerName,
+    firstPlayerName = conf.firstPlayerName,
+    secondPlayerName = conf.secondPlayerName,
     opts = {}
   ) {
-    this.appStatus = 'setuping'
-    /**
-     * chessMap：初始化的棋谱
-     * letFirstPlayer：让先，逻辑为：该棋手的归属方设置为红方，如果没有让先的值，则使用猜先逻辑
-     * isBlackFirst: 黑棋先行
-     */
-    const { chessMap, letFirstPlayer, isBlackFirst = false } = opts
-
     // 初始化棋手
     if (
       typeof firstPlayerName !== 'string' ||
@@ -165,16 +157,23 @@ export default class Chessgame {
     ) {
       throw new Error('棋手名称不能重复，必须唯一！')
     }
-    if (
-      letFirstPlayer !== undefined &&
-      ![firstPlayerName, secondPlayerName].includes(letFirstPlayer)
-    ) {
+
+    /**
+     * chessMap：初始化的棋谱
+     * letFirstPlayer：让先，逻辑为：该棋手的归属方设置为红方，如果没有让先的值，则使用猜先逻辑
+     * isBlackFirst: 黑棋先行
+     */
+    const { chessMap, letFirstPlayer, isBlackFirst = false } = opts
+    const hasLetFirst = [firstPlayerName, secondPlayerName].includes(letFirstPlayer); // 有让先设置
+
+    if (letFirstPlayer !== undefined && !hasLetFirst) {
       throw new Error('让先[letFirstPlayer]的值为任一棋手的名称！')
     }
 
+    this.appStatus = 'setuping'
+
     const firstPlayer = new Player(firstPlayerName)
     const secondPlayer = new Player(secondPlayerName)
-    const guessFirstResult = Chessgame.guessFirst()
     const belongtoPlayer = (isFirst) => {
       if (isFirst) {
         firstPlayer.setColor(CHESS_COLOR.RED)
@@ -192,10 +191,10 @@ export default class Chessgame {
     }
 
     // 如果有设置让先，则让先，否则猜先
-    if (letFirstPlayer !== undefined) {
+    if (hasLetFirst) {
       belongtoPlayer(letFirstPlayer === firstPlayerName)
     } else {
-      belongtoPlayer(guessFirstResult)
+      belongtoPlayer(Chessgame.guessFirst())
     }
 
     // 初始化棋盘
@@ -221,16 +220,10 @@ export default class Chessgame {
    */
   playChess(from, to) {
     if (this.canPlay) {
-      const playOrder = this.playRecordTable.length + 1
-      const playInfo = this.player.playChess(from, to, playOrder)
+      if (this.player.playChess(from, to, playOrder) === null) return
+
       // todo：评估当前棋局
       this.chessboard.evaluate(this.chessGamePeriod)
-
-      if (playInfo === null) {
-        return
-      } else {
-        this.playRecordTable.push(playInfo)
-      }
 
       // 设置棋盘状态, 返回false说明棋局已决出胜负
       if (this.checkGameStatus()) {
@@ -252,20 +245,7 @@ export default class Chessgame {
    * 悔棋
    */
   regretChess() {
-    // 丢弃棋招记录
-    const record = this.playRecordTable.pop()
-    const { playOrder, from, to, discardedChess } = parseTread(record)
-
-    this.chessboard.getChess(to).setPosition(from)
-
-    if (discardedChess) {
-      // 有吃棋子的行为，将吃掉的棋子恢复原位
-      const restoredChess = this.chessboard.getDiscardedChess(Number(playOrder))
-
-      restoredChess.setPosition(to, () => {
-        restoredChess.playOrder = -1
-      })
-    }
+    this.chessboard.regretChess()
 
     this.turnToNext()
   }

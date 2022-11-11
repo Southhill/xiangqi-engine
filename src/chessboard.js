@@ -2,10 +2,11 @@
  * 棋盘
  */
 
-import createChess, { createStandardChessMap } from './chess'
-import evaluate from './evaluate'
-import { createChessboardGrid, locateEdge, parseTread } from './utils'
-import { CHESS_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map'
+import createChess, { createStandardChessMap } from './chess.js'
+import evaluate from './evaluate.js'
+import { createChessboardGrid, locateEdge, parseTread } from './utils.js'
+import { CHESS_COLOR, DISCARDED_CHESS, CHESS_TYPE } from './map.js'
+import { PlayRecordTable } from './playrecord.js'
 
 export default class Chessboard {
   constructor() {
@@ -25,6 +26,10 @@ export default class Chessboard {
      * 当前棋盘的模拟
      */
     this.simulator = new Simulator()
+    /**
+     * 走法记录表：用于悔棋(撤销)
+     */
+    this.playRecordTable = new PlayRecordTable();
   }
   get discardedChessPool() {
     return this.chessPool.filter((chess) => chess.position === DISCARDED_CHESS)
@@ -51,6 +56,14 @@ export default class Chessboard {
       [0, 0],
       [9, 8],
     ]
+  }
+
+  playChess({ chess, from, to }) {
+    this.playRecordTable.pushRecord({ chess, from, to, discardChess: this.getChess(to) })
+  }
+
+  regretChess() {
+    return this.playRecordTable.popRecord()
   }
   /**
    * 初始化棋谱

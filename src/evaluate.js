@@ -1,4 +1,4 @@
-import { CHESS_COLOR } from './map'
+import { CHESS_COLOR } from './map.js'
 
 /**
  * 当前棋面的评估函数

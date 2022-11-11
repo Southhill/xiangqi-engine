@@ -1,8 +1,8 @@
 /**
  * 棋手
  */
-import { CHESS_TYPE } from './map'
-import { stringTread } from './utils'
+import { CHESS_TYPE } from './map.js'
+import { stringTread } from './utils.js'
 
 export default class Player {
   constructor(name) {
@@ -84,7 +84,7 @@ export default class Player {
   /**
    * 棋手下棋，返回`null`表明预定下棋位置错误
    */
-  playChess(from, to, playOrder) {
+  playChess(from, to) {
     // 获取from处的棋子
     const chess = this.getSelfChess(from)
     // 获取所有下法
@@ -94,17 +94,6 @@ export default class Player {
       return null
     }
 
-    let record = ''
-    if (this.chessboard.hasChess(to)) {
-      const discardChess = this.chessboard.discard(to, playOrder)
-
-      record = stringTread({ playOrder, chess, from, to, discardChess })
-    } else {
-      record = stringTread({ playOrder, chess, from, to })
-    }
-
-    chess.setPosition(to)
-
-    return record
+    this.chessboard.playChess({ chess, from, to })
   }
 }

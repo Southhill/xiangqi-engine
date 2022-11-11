@@ -1,4 +1,4 @@
-import { CHESS_COLOR } from './map'
+import { CHESS_COLOR } from './map.js'
 
 function flips(num) {
   return num ^ 1

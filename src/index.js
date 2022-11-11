@@ -1,5 +1,5 @@
-import Chessgame from './chessgame'
-import { generateI18n } from './utils'
+import Chessgame from './chessgame.js'
+import { generateI18n } from './utils.js'
 
 Chessgame.config = (opts = {}) => {
   const { i18nMap } = opts

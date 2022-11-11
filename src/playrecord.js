@@ -1,11 +1,16 @@
-import { CHESS_COLOR, RED_PLAY_STEP } from './map'
+import Chessboard from './chessboard.js';
+import { CHESS_COLOR, DISCARDED_CHESS, RED_PLAY_STEP } from './map.js'
+import { parseTread } from './utils.js';
 
 export default class PlayRecord {
-  constructor(from, to, chess, chessboard) {
+  constructor(recordIndex, from, to, chess, discardChess) {
     this.from = from
     this.to = to
     this.chess = chess
-    this.chessboard = chessboard
+    this.discardChess = discardChess;
+    this.recordIndex = recordIndex;
+
+    chess.setPosition(to);
 
     const [x1, y1] = from.split(',').map(Number)
     const [x2, y2] = to.split(',').map(Number)
@@ -95,5 +100,41 @@ export default class PlayRecord {
     }
 
     return result.join('')
+  }
+}
+
+export class PlayRecordTable {
+  this.table = []
+
+  /**
+   * 获取人类可读的走法记录表
+   */
+  get humanReadRecordTable() {
+    return this.table.map((record) => record.getPlayRecord())
+  }
+
+  get length() {
+    return this.table.length
+  }
+
+  pushRecord({ chess, from, to, discardChess }) {
+    const index = this.length + 1
+    if (discardChess) {
+      discardChess.setPosition(DISCARDED_CHESS, () => {
+        discardedChess.playOrder = index
+      })
+    }
+    chess.setPosition(to)
+    this.table.push(new PlayRecord(index, from, to, chess, discardChess))
+  }
+
+  popRecord() {
+    const record = this.table.pop()
+    record.chess.setPosition(record.from)
+    record.discardChess?.setPosition(record.to, () => {
+      record.discardChess.playOrder = -1
+    })
+
+    return record
   }
 }
